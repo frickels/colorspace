@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 public class XYYTest {
     @Test
     public final void test() {
-        final RGB rgb = new RGB(0, 0.5, 1.);
+        final RGB rgb = new RGB(RGBColorSpace.sRGB, 0, 0.5, 1.);
         System.out.println("XYYTest " + rgb);
-        final XYZ xyz = rgb.toXYZ(RGBColorSpace.sRGB);
+        final XYZ xyz = rgb.toXYZ();
         System.out.println("XYYTest " + xyz);
         final XYY xyy = XYY.fromXYZ(xyz);
         System.out.println("XYYTest " + xyy);
@@ -18,9 +18,9 @@ public class XYYTest {
         final RGB rgb2 = RGB.fromXYZ(RGBColorSpace.sRGB, xyz2);
         System.out.println("XYYTest " + rgb2);
 
-        assertDoubleDiff(0.001, rgb2.getR(), 0);
-        assertDoubleDiff(0.001, rgb2.getG(), 0.5);
-        assertDoubleDiff(0.001, rgb2.getB(), 1.);
+        assertDoubleDiff(0.001, 0., rgb2.getR());
+        assertDoubleDiff(0.001, 0.5, rgb2.getG());
+        assertDoubleDiff(0.001, 1., rgb2.getB());
     }
 
 }

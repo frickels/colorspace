@@ -1,6 +1,9 @@
 package info.kuechler.frickels.colorspace;
 
+import static info.kuechler.frickels.colorspace.MatrixUtil.determinant33;
 import static info.kuechler.frickels.colorspace.MatrixUtil.matrix33mult31;
+
+import java.util.Objects;
 
 public class ChromaticAdaptation {
 
@@ -23,12 +26,32 @@ public class ChromaticAdaptation {
     });
 
     private final double[][] fdata;
-
     private final double[][] fdataReverse;
+    private final double determinatMatrix;
 
     public ChromaticAdaptation(final double[][] data) {
         this.fdata = data;
         this.fdataReverse = MatrixUtil.invert33(data);
+        this.determinatMatrix = determinant33(this.fdata);
+    }
+
+    public XYZ adapt(final XYZ xyz, final Illuminant toIlluminant) {
+        if (xyz.getIlluminant().equals(toIlluminant)) {
+            return xyz;
+        }
+
+        final double[] ργβSource = matrix33mult31(getData(), xyz.getIlluminant().getXyy().toXYZ().toDouble());
+        final double[] ργβDestination = matrix33mult31(getData(), toIlluminant.getXyy().toXYZ().toDouble());
+
+        final double[] data2 = matrix33mult31(getData(), xyz.toDouble());
+        final double[] data3 = new double[] { //
+                data2[0] *= (ργβDestination[0] / ργβSource[0]), //
+                data2[1] *= (ργβDestination[1] / ργβSource[1]), //
+                data2[2] *= (ργβDestination[2] / ργβSource[2]) //
+        };
+        final double[] data4 = matrix33mult31(getDataReverse(), data3);
+
+        return new XYZ(toIlluminant, data4[0], data4[1], data4[2]);
     }
 
     public double[][] getData() {
@@ -39,24 +62,24 @@ public class ChromaticAdaptation {
         return fdataReverse.clone();
     }
 
-    public static XYZ adapt(final XYZ xyz, final ChromaticAdaptation method, final Illuminant fromIlluminant,
-            final Illuminant toIlluminant) {
-
-        if (fromIlluminant == toIlluminant) { // same instance
-            return xyz;
-        }
-
-        final double[] ργβSource = matrix33mult31(method.getData(), fromIlluminant.getXyy().toXYZ().toDouble());
-        final double[] ργβDestination = matrix33mult31(method.getData(), toIlluminant.getXyy().toXYZ().toDouble());
-
-        final double[] data2 = matrix33mult31(method.getData(), xyz.toDouble());
-        final double[] data3 = new double[] { //
-                data2[0] = data2[0] * (ργβDestination[0] / ργβSource[0]), //
-                data2[1] = data2[1] * (ργβDestination[1] / ργβSource[1]), //
-                data2[2] = data2[2] * (ργβDestination[2] / ργβSource[2]) //
-        };
-        final double[] data4 = matrix33mult31(method.getDataReverse(), data3);
-
-        return new XYZ(data4[0], data4[1], data4[2]);
+    @Override
+    public int hashCode() {
+        return Objects.hash(determinatMatrix);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ChromaticAdaptation other = (ChromaticAdaptation) obj;
+        return Double.doubleToLongBits(determinatMatrix) == Double.doubleToLongBits(other.determinatMatrix);
+    }
+
 }

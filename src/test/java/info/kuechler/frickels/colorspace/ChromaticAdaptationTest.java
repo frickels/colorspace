@@ -42,17 +42,16 @@ public class ChromaticAdaptationTest {
     public final void testXyzScaling() {
         assertDoubleArrayEquals(0.0000001, XYZ_SCALING_REVERSE, XYZ_SCALING.getDataReverse());
     }
-    
+
     @Test
     public final void testSRgb2Xyz() {
-        final XYZ source = new RGB(0.5, 0.5, 0.5).toXYZ(RGBColorSpace.sRGB);
+        final XYZ source = new RGB(RGBColorSpace.sRGB, 0.5, 0.5, 0.5).toXYZ();
         System.out.println("ChromaticAdaptationTest source " + source);
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
 
-        final XYZ target = ChromaticAdaptation.adapt(source, ChromaticAdaptation.BRADFORD, Illuminant.D65_2,
-                Illuminant.D50_2);
+        final XYZ target = BRADFORD.adapt(source, Illuminant.D50_2);
         System.out.println("ChromaticAdaptationTest target " + target);
         assertDoubleDiff(0.00001, 0.206385, target.getX());
         assertDoubleDiff(0.00001, 0.214040, target.getY());

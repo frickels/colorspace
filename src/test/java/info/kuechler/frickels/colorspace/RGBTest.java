@@ -9,9 +9,9 @@ public class RGBTest {
 
     @Test
     public final void test() {
-        final RGB c = new RGB(0.5, 0.5, 0.5);
+        final RGB c = new RGB(RGBColorSpace.sRGB, 0.5, 0.5, 0.5);
         System.out.println("RGBTest " + c);
-        final XYZ xyz = c.toXYZ(RGBColorSpace.sRGB);
+        final XYZ xyz = c.toXYZ();
         System.out.println("RGBTest " + xyz);
         TestUtil.assertDoubleArrayEquals(0.000001, new double[] { 0.203440, 0.214041, 0.233054 }, xyz.toDouble());
         final RGB d = RGB.fromXYZ(RGBColorSpace.sRGB, xyz);
