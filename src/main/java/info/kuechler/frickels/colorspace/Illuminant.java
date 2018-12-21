@@ -117,6 +117,9 @@ public class Illuminant {
 
     public static double adjustPlankBlackbody(final double f) {
         // https://en.wikipedia.org/wiki/Illuminant_D65
+        // ? [Wyszecki Stiles], P.144 (1.4388 / 1.4350), shows wrong
+        //
+        // 1.4388 = (Plank constant * velocity of light) / Boltzmann constant 
         return f * (1.4388 / 1.438);
     }
 

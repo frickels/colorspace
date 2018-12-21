@@ -3,28 +3,35 @@ package info.kuechler.frickels.colorspace;
 import java.util.Arrays;
 import java.util.Objects;
 
+// https://de.wikipedia.org/wiki/Lab-Farbraum
+// http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+// [Wyszecki Stiles], P.166ff & P.829
 public class LAB implements CIEColor {
 
     private static final double κ = 24389. / 27.;
     
     private static final double ϵ = 216. / 24389.;
 
+    private static final double κ_16 = κ / 16.;
+    
+    private static final double _16_116 = 16. / 116.;
+
+
     private final double[] fdata;
     private final Illuminant illuminant;
 
     public static LAB fromXYZ(final XYZ xyz) {
-        // https://de.wikipedia.org/wiki/Lab-Farbraum
-        // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
         final XYZ ill = xyz.getIlluminant().getXyy().toXYZ();
 
         final double fx = xyz.getX() / ill.getX();
         final double fy = xyz.getY() / ill.getY();
         final double fz = xyz.getZ() / ill.getZ();
 
-        final double x = (fx < ϵ) ? (1. / 116.) * (κ * fx + 16.) : Math.cbrt(fx);
-        final double y = (fy < ϵ) ? (1. / 116.) * (κ * fy + 16.) : Math.cbrt(fy);
-        final double z = (fz < ϵ) ? (1. / 116.) * (κ * fz + 16.) : Math.cbrt(fz);
+        final double x = (fx <= ϵ) ? (κ_16 * fx + _16_116) : Math.cbrt(fx);
+        final double y = (fy <= ϵ) ? (κ_16 * fy + _16_116) : Math.cbrt(fy);
+        final double z = (fz <= ϵ) ? (κ_16 * fz + _16_116) : Math.cbrt(fz);
 
+        // ? [Wyszecki Stiles] P.167: (κ * fy) for (fy <= ϵ)
         final double L = 116. * y - 16.;
         final double a = 500. * (x - y);
         final double b = 200. * (y - z);
@@ -55,6 +62,10 @@ public class LAB implements CIEColor {
     public LAB(final Illuminant illuminant, final double L, final double a, final double b) {
         this.fdata = new double[] { L, a, b };
         this.illuminant = illuminant;
+    }
+
+    public double getDiff(final DeltaE deltaE, final LAB lab2) {
+        return deltaE.calculate(this, lab2);
     }
 
     public double getL() {

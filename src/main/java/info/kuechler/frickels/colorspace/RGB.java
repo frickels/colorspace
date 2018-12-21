@@ -12,6 +12,10 @@ public class RGB implements CIEColor {
         this.colorSpace = colorSpace;
     }
 
+    public static RGB fromRGBNumber(final RGBColorSpace colorSpace, final int rgb) {
+        return from0TO255(colorSpace, rgb % 0xff, (rgb >> 8) % 0xff, (rgb >> 16) % 0xff);
+    }
+
     public static RGB from0TO255(final RGBColorSpace colorSpace, final int r, final int g, final int b) {
         return new RGB(colorSpace, r / 255., g / 255., b / 255.);
     }
