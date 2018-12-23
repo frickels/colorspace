@@ -64,7 +64,7 @@ public class LAB implements CIEColor {
         this.illuminant = illuminant;
     }
 
-    public double getDiff(final DeltaE deltaE, final LAB lab2) {
+    public double getDiff(final DeltaE<LAB> deltaE, final LAB lab2) {
         return deltaE.calculate(this, lab2);
     }
 

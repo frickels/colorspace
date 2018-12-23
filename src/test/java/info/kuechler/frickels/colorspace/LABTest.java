@@ -67,12 +67,11 @@ public class LABTest {
         assertDoubleDiff(0.00001, ill.getZ(), xyz.getZ());
     }
 
-    @Test
-    public final void testWithCSV() throws IOException {
-        CSVTestUtil.loadRGBFile((lab, rgb) -> {
-            final RGB r = RGB.fromXYZ(RGBColorSpace.sRGB, lab.toXYZ());
-            final LAB l = LAB.fromXYZ(rgb.toXYZ());
-            System.out.println(r + " " + rgb + " " + l + " " + lab);
-        });
+//    @ParameterizedTest
+//    @MethodSource("info.kuechler.frickels.colorspace.CSVTestUtil#loadRGBLabFile")
+    public final void testWithCSV(final RGB rgb, final LAB lab) throws IOException {
+        final RGB r = RGB.fromXYZ(RGBColorSpace.sRGB, lab.toXYZ());
+        final LAB l = LAB.fromXYZ(rgb.toXYZ());
+        System.out.println(r + " " + rgb + " " + l + " " + lab);
     }
 }

@@ -1,30 +1,46 @@
 package info.kuechler.frickels.colorspace;
 
+import static info.kuechler.frickels.colorspace.RGBColorSpace.sRGB;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class CSVTestUtil {
+
     public static final CSVFormat FORMAT = CSVFormat.DEFAULT.withDelimiter(';');
 
-    public static void loadRGBFile(final BiConsumer<LAB, RGB> consumer) throws IOException {
+    public static Stream<Arguments> loadRGBLabFile() throws IOException {
         try (final InputStreamReader in = new InputStreamReader(
-                CSVTestUtil.class.getResourceAsStream("/files/hlc-lab-rgb.csv"), StandardCharsets.UTF_8);
+                CSVTestUtil.class.getResourceAsStream("/files/hlc-lab-rgb.csv"), UTF_8);
                 final CSVParser parser = new CSVParser(in, FORMAT);) {
-            for (final CSVRecord record : parser) {
-                if (parser.getCurrentLineNumber() != 1L) {
-                    final LAB lab = new LAB(Illuminant.D65_2, toDouble(record.get(3)), toDouble(record.get(4)),
-                            toDouble(record.get(5)));
-                    final RGB rgb = RGB.from0TO255(RGBColorSpace.sRGB, toInt(record.get(6)), toInt(record.get(7)),
-                            toInt(record.get(8)));
-                    consumer.accept(lab, rgb);
-                }
-            }
+            return parser.getRecords().stream().filter(rec -> rec.getRecordNumber() != 1L).map(record -> {
+                final LAB lab = new LAB(sRGB.getIlluminant(), toDouble(record.get(3)), toDouble(record.get(4)),
+                        toDouble(record.get(5)));
+                final RGB rgb = RGB.from0TO255(sRGB, toInt(record.get(6)), toInt(record.get(7)), toInt(record.get(8)));
+                return Arguments.arguments(rgb, lab);
+            });
+        }
+    }
+
+    public static Stream<Arguments> loadRGBHSVHSLFile() throws IOException {
+        try (final InputStreamReader in = new InputStreamReader(
+                CSVTestUtil.class.getResourceAsStream("/files/rgb-hsv-hsl.csv"), UTF_8);
+                final CSVParser parser = new CSVParser(in, FORMAT);) {
+            return parser.getRecords().stream().filter(rec -> rec.getRecordNumber() != 1L).map(record -> {
+                final HSV hsv = HSV.fromGradAnd0To100(sRGB, toDouble(record.get(1)), toDouble(record.get(2)),
+                        toDouble(record.get(3)));
+                final HSL hsl = HSL.fromGradAnd0To100(sRGB, toDouble(record.get(4)), toDouble(record.get(5)),
+                        toDouble(record.get(6)));
+                final RGB rgb = RGB.from0To100(sRGB, toInt(record.get(7)), toInt(record.get(8)), toInt(record.get(9)));
+                System.out.println("RGB-2-Hsv File " + rgb + " - " + hsv + " - " + hsl);
+                return Arguments.arguments(rgb, hsv, hsl);
+            });
         }
     }
 
@@ -33,6 +49,7 @@ public class CSVTestUtil {
     }
 
     private static double toDouble(String string) {
-        return Double.valueOf(string.replace(',', '.'));
+        // System.out.println(string);
+        return Double.valueOf(string.replace(',', '.').replace('–', '0').replaceAll("[^\\d\\.]+", ""));
     }
 }

@@ -19,6 +19,10 @@ public class RGB implements CIEColor {
     public static RGB from0TO255(final RGBColorSpace colorSpace, final int r, final int g, final int b) {
         return new RGB(colorSpace, r / 255., g / 255., b / 255.);
     }
+    
+    public static RGB from0To100(final RGBColorSpace colorSpace, final int r, final int g, final int b) {
+        return new RGB(colorSpace, r / 100., g / 100., b / 100.);
+    }
 
     /**
      * Creates a {@link RGB} from a {@link XYZ}. Before transformation a chromatic adaption to the {@link RGBColorSpace}
