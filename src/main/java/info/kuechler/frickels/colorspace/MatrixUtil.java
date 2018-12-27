@@ -52,6 +52,13 @@ public class MatrixUtil {
         };
     }
 
+    public static double euclideanDistance3(final double[] p1, final double[] p2) {
+        final double _Δ1 = p1[0] - p2[0];
+        final double _Δ2 = p1[1] - p2[1];
+        final double _Δ3 = p1[2] - p2[2];
+        return Math.sqrt((_Δ1 * _Δ1) + (_Δ2 * _Δ2) + (_Δ3 * _Δ3));
+    }
+
     private MatrixUtil() {
         // nothing
     }

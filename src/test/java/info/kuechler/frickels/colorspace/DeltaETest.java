@@ -12,4 +12,66 @@ public class DeltaETest {
         System.out.println("DeltaETest " + v1);
         TestUtil.assertDoubleDiff(0.000001, 11.180340, v1);
     }
+
+    @Test
+    public final void testCIE1994Textiles() {
+        final LAB lab1 = new LAB(Illuminant.D65_2, 100., 10., 10.);
+        final LAB lab2 = new LAB(Illuminant.D65_2, 90., 10., 5.);
+        final double v1 = DeltaE.CIE1994Δ_TEXTILES.calculate(lab1, lab2);
+        System.out.println("DeltaETest " + v1);
+        TestUtil.assertDoubleDiff(0.000001, 6.278501, v1);
+    }
+
+    @Test
+    public final void testCIE1994Graphic() {
+        final LAB lab1 = new LAB(Illuminant.D65_2, 100., 10., 10.);
+        final LAB lab2 = new LAB(Illuminant.D65_2, 90., 10., 5.);
+        final double v1 = DeltaE.CIE1994Δ_GRAPHIC_ART.calculate(lab1, lab2);
+        System.out.println("DeltaETest " + v1);
+        TestUtil.assertDoubleDiff(0.000001, 10.6920880, v1);
+    }
+
+    @Test
+    public final void testCIE2000Graphic() {
+        final LAB lab1 = new LAB(Illuminant.D65_2, 100., 10., 10.);
+        final LAB lab2 = new LAB(Illuminant.D65_2, 90., 10., 5.);
+        final double v1 = DeltaE.CIE2000Δ.calculate(lab1, lab2);
+        System.out.println("DeltaETest " + v1);
+        TestUtil.assertDoubleDiff(0.000001, 7.142951, v1);
+    }
+
+    @Test
+    public final void testCIE2000GraphicReverse() {
+        final LAB lab1 = new LAB(Illuminant.D65_2, 100., 10., 10.);
+        final LAB lab2 = new LAB(Illuminant.D65_2, 90., 10., 5.);
+        final double v1 = DeltaE.CIE2000Δ.calculate(lab2, lab1);
+        System.out.println("DeltaETest " + v1);
+        TestUtil.assertDoubleDiff(0.000001, 7.142951, v1);
+    }
+
+    @Test
+    public final void testCIE2000GraphicZero() {
+        final LAB lab1 = new LAB(Illuminant.D65_2, 100., 10., 10.);
+        final double v1 = DeltaE.CIE2000Δ.calculate(lab1, lab1);
+        System.out.println("DeltaETest " + v1);
+        TestUtil.assertDoubleDiff(0.000001, 0., v1);
+    }
+
+    @Test
+    public final void testCMC11() {
+        final LAB lab1 = new LAB(Illuminant.D65_2, 100., 10., 10.);
+        final LAB lab2 = new LAB(Illuminant.D65_2, 90., 10., 5.);
+        final double v1 = DeltaE.CMC11Δ.calculate(lab1, lab2);
+        System.out.println("DeltaETest " + v1);
+        TestUtil.assertDoubleDiff(0.000001, 9.609243, v1);
+    }
+
+    @Test
+    public final void testCMC12() {
+        final LAB lab1 = new LAB(Illuminant.D65_2, 100., 10., 10.);
+        final LAB lab2 = new LAB(Illuminant.D65_2, 90., 10., 5.);
+        final double v1 = DeltaE.CMC21Δ.calculate(lab1, lab2);
+        System.out.println("DeltaETest " + v1);
+        TestUtil.assertDoubleDiff(0.000001, 7.627959, v1);
+    }
 }

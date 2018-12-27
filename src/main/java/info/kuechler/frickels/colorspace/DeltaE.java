@@ -3,28 +3,31 @@ package info.kuechler.frickels.colorspace;
 import java.util.function.ToDoubleBiFunction;
 
 public class DeltaE<T> {
-    
-    // TODO: CIE94 und CIEDE2000 und CMC(l:c)
 
     public static final DeltaE<LAB> CIE1976Δ = new DeltaE<>((lab1, lab2) -> {
-        final double dL = lab1.getL() - lab2.getL();
-        final double dA = lab1.getA() - lab2.getA();
-        final double dB = lab1.getB() - lab2.getB();
-        return Math.sqrt((dL * dL) + (dA * dA) + (dB * dB));
+        return MatrixUtil.euclideanDistance3(lab1.toDouble(), lab2.toDouble());
     });
 
     public static final DeltaE<DIN99> DIN99Δ = new DeltaE<>((din991, din992) -> {
-        final double dL = din991.getL() - din992.getL();
-        final double dA = din991.getA() - din992.getA();
-        final double dB = din991.getB() - din992.getB();
-        return Math.sqrt((dL * dL) + (dA * dA) + (dB * dB));
+        return MatrixUtil.euclideanDistance3(din991.toDouble(), din992.toDouble());
     });
-    
+
     public static final DeltaE<DIN99O> DIN99OΔ = new DeltaE<>((din99o1, din99o2) -> {
-        final double dL = din99o1.getL() - din99o2.getL();
-        final double dA = din99o1.getA() - din99o2.getA();
-        final double dB = din99o1.getB() - din99o2.getB();
-        return Math.sqrt((dL * dL) + (dA * dA) + (dB * dB));
+        return MatrixUtil.euclideanDistance3(din99o1.toDouble(), din99o2.toDouble());
+    });
+
+    public static final DeltaE<LAB> CIE1994Δ_TEXTILES = new DeltaE<>(DeltaE1994::calculateTextiles);
+
+    public static final DeltaE<LAB> CIE1994Δ_GRAPHIC_ART = new DeltaE<>(DeltaE1994::calculateGraphicArts);
+
+    public static final DeltaE<LAB> CIE2000Δ = new DeltaE<>(DeltaE2000::calculate);
+
+    public static final DeltaE<LAB> CMC11Δ = new DeltaE<>((lab1, lab2) -> {
+        return DeltaECMC.calculate(lab1, lab2, 1., 1.);
+    });
+
+    public static final DeltaE<LAB> CMC21Δ = new DeltaE<>((lab1, lab2) -> {
+        return DeltaECMC.calculate(lab1, lab2, 2., 1.);
     });
 
     private ToDoubleBiFunction<T, T> calculator;
