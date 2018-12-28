@@ -1,7 +1,7 @@
 package info.kuechler.frickels.colorspace;
 
 import static info.kuechler.frickels.colorspace.Illuminant.D65_2;
-import static info.kuechler.frickels.colorspace.RGBColorSpace.sRGB;
+import static info.kuechler.frickels.colorspace.RGBColorSpaceImpl.sRGB;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
 
 import java.io.IOException;
@@ -70,7 +70,7 @@ public class LABTest {
 //    @ParameterizedTest
 //    @MethodSource("info.kuechler.frickels.colorspace.CSVTestUtil#loadRGBLabFile")
     public final void testWithCSV(final RGB rgb, final LAB lab) throws IOException {
-        final RGB r = RGB.fromXYZ(RGBColorSpace.sRGB, lab.toXYZ());
+        final RGB r = RGB.fromXYZ(sRGB, lab.toXYZ());
         final LAB l = LAB.fromXYZ(rgb.toXYZ());
         System.out.println(r + " " + rgb + " " + l + " " + lab);
     }

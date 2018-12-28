@@ -79,9 +79,18 @@ public class LUV implements CIEColor {
         final double c = -1. / 3.;
         final double d = Y * ((39. * L) / (V + 13. * L * vsn) - 5.);
 
-        final double X = (d - b) / (a - c);
-        final double Z = X * a + b;
-
+        final double X;
+        if (Double.isNaN(a) || Double.isNaN(d)) {
+            X = 0.;
+        } else {
+            X = (d - b) / (a - c);
+        }
+        final double Z;
+        if (Double.isNaN(a)) {
+            Z = 0.;
+        } else {
+            Z = X * a + b;
+        }
         return new XYZ(illuminant, X, Y, Z);
     }
 

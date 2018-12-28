@@ -3,30 +3,28 @@ package info.kuechler.frickels.colorspace;
 import java.util.Arrays;
 import java.util.Objects;
 
-// https://web.archive.org/web/20080311083637/http://www.farbmetrik-gall.de:80/cielab/index.html
-// http://www.brucelindbloom.com/index.html?Eqn_Lab_to_LCH.html
-public class LCHab implements CIEColor {
+public class LCHuv implements CIEColor {
     private final double[] fdata;
     private final Illuminant illuminant;
 
-    public static LCHab fromLAB(final LAB lab) {
-        final double L = lab.getL();
-        final double a = lab.getA();
-        final double b = lab.getB();
-        
-        final double C = Math.sqrt(a * a + b * b);
-        final double H = Math.toDegrees(Math.atan2(b, a));
-        return new LCHab(lab.getIlluminant(), L, C, (H < 0.) ? H + 360. : H);
+    public static LCHuv fromLUV(final LUV luv) {
+        final double L = luv.getL();
+        final double u = luv.getU();
+        final double v = luv.getV();
+
+        final double C = Math.sqrt(u * u + v * v);
+        final double H = Math.toDegrees(Math.atan2(v, u));
+        return new LCHuv(luv.getIlluminant(), L, C, (H < 0.) ? H + 360. : H);
     }
 
-    public LAB toLAB() {
+    public LUV toLUV() {
         final double C = getC();
         final double Hrad = Math.toRadians(getH());
-        
-        return new LAB(illuminant, getL(), C * Math.cos(Hrad), C * Math.sin(Hrad));
+
+        return new LUV(illuminant, getL(), C * Math.cos(Hrad), C * Math.sin(Hrad));
     }
 
-    public LCHab(final Illuminant illuminant, final double L, final double C, final double H) {
+    public LCHuv(final Illuminant illuminant, final double L, final double C, final double H) {
         this.fdata = new double[] { L, C, H };
         this.illuminant = illuminant;
     }
@@ -59,7 +57,7 @@ public class LCHab implements CIEColor {
 
     @Override
     public String toString() {
-        return String.format("LCHab [%.10f, %.10f, %.10f]", fdata[0], fdata[1], fdata[2]);
+        return String.format("LCHuv [%.10f, %.10f, %.10f]", fdata[0], fdata[1], fdata[2]);
     }
 
     @Override
@@ -82,7 +80,7 @@ public class LCHab implements CIEColor {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final LCHab other = (LCHab) obj;
+        final LCHuv other = (LCHuv) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(illuminant, other.illuminant);
     }
 }

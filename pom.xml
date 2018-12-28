@@ -6,8 +6,6 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>Colorspace Converter</name>
 	
-	
-	
 	<properties>
 		<project.java.version>10</project.java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

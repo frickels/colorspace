@@ -83,4 +83,13 @@ public class DeltaETest {
         System.out.println("DeltaETest " + v1);
         TestUtil.assertDoubleDiff(0.000001, 13.010304, v1);
     }
+
+    @Test
+    public final void testLuv2() {
+        final LUV luv1 = LUV.fromXYZ(new LAB(Illuminant.D65_2, 100., 10., 10.).toXYZ());
+        final LUV luv2 = LUV.fromXYZ(new LAB(Illuminant.D65_2, 100., 10., 5.).toXYZ());
+        final double v1 = DeltaE.LUVΔ.calculate(luv1, luv2);
+        System.out.println("DeltaETest " + v1);
+        TestUtil.assertDoubleDiff(0.000001, 8.127678, v1);
+    }
 }

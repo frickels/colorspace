@@ -45,7 +45,7 @@ public class ChromaticAdaptationTest {
 
     @Test
     public final void testSRgb2Xyz() {
-        final XYZ source = new RGB(RGBColorSpace.sRGB, 0.5, 0.5, 0.5).toXYZ();
+        final XYZ source = new RGB(RGBColorSpaceImpl.sRGB, 0.5, 0.5, 0.5).toXYZ();
         System.out.println("ChromaticAdaptationTest source " + source);
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
         assertDoubleDiff(0.00001, 0.2034400, source.getX());

@@ -1,6 +1,6 @@
 package info.kuechler.frickels.colorspace;
 
-import static info.kuechler.frickels.colorspace.RGBColorSpace.sRGB;
+import static info.kuechler.frickels.colorspace.RGBColorSpaceImpl.sRGB;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
@@ -14,19 +14,6 @@ import org.junit.jupiter.params.provider.Arguments;
 public class CSVTestUtil {
 
     public static final CSVFormat FORMAT = CSVFormat.DEFAULT.withDelimiter(';');
-
-    public static Stream<Arguments> loadRGBLabFile() throws IOException {
-        try (final InputStreamReader in = new InputStreamReader(
-                CSVTestUtil.class.getResourceAsStream("/files/hlc-lab-rgb.csv"), UTF_8);
-                final CSVParser parser = new CSVParser(in, FORMAT);) {
-            return parser.getRecords().stream().filter(rec -> rec.getRecordNumber() != 1L).map(record -> {
-                final LAB lab = new LAB(sRGB.getIlluminant(), toDouble(record.get(3)), toDouble(record.get(4)),
-                        toDouble(record.get(5)));
-                final RGB rgb = RGB.from0TO255(sRGB, toInt(record.get(6)), toInt(record.get(7)), toInt(record.get(8)));
-                return Arguments.arguments(rgb, lab);
-            });
-        }
-    }
 
     public static Stream<Arguments> loadRGBHSVHSLFile() throws IOException {
         try (final InputStreamReader in = new InputStreamReader(

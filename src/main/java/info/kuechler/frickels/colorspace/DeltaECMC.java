@@ -2,9 +2,9 @@ package info.kuechler.frickels.colorspace;
 
 // http://www.brucelindbloom.com/index.html?Eqn_DeltaE_CMC.html
 // http://colormine.org/delta-e-calculator/Cmc
-// // Line numbers based on www.brucelindbloom.com
 public class DeltaECMC {
 
+    // Line numbers based on www.brucelindbloom.com
     public static double calculate(final LAB lab1, final LAB lab2, final double l, final double c) {
         final double L1 = lab1.getL();
         final double a1 = lab1.getA();
