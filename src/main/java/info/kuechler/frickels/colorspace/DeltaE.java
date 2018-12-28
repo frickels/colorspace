@@ -15,6 +15,10 @@ public class DeltaE<T> {
     public static final DeltaE<DIN99O> DIN99OΔ = new DeltaE<>((din99o1, din99o2) -> {
         return MatrixUtil.euclideanDistance3(din99o1.toDouble(), din99o2.toDouble());
     });
+    
+    public static final DeltaE<LUV> LUVΔ = new DeltaE<>((luv1, luv2) -> {
+        return MatrixUtil.euclideanDistance3(luv1.toDouble(), luv2.toDouble());
+    });
 
     public static final DeltaE<LAB> CIE1994Δ_TEXTILES = new DeltaE<>(DeltaE1994::calculateTextiles);
 
@@ -36,7 +40,7 @@ public class DeltaE<T> {
         this.calculator = calculator;
     }
 
-    public double calculate(final T lab1, final T lab2) {
-        return calculator.applyAsDouble(lab1, lab2);
+    public double calculate(final T color1, final T color2) {
+        return calculator.applyAsDouble(color1, color2);
     }
 }

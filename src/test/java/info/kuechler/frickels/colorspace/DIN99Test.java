@@ -33,23 +33,45 @@ public class DIN99Test {
     }
 
     @Test
-    public final void testDiff() {
-        // https://jolars.github.io/qualpalr/articles/introduction.html#examples
+    public final void testDiff1() {
         final LAB lab1 = LAB.fromXYZ(RGB.fromRGBNumber(sRGB, 0x5C70C8).toXYZ());
         final LAB lab2 = LAB.fromXYZ(RGB.fromRGBNumber(sRGB, 0xDCC670).toXYZ());
-        System.out.println("DIN99DTest " + RGB.fromRGBNumber(sRGB, 0x5C70C8));
-        System.out.println("DIN99DTest " + RGB.fromRGBNumber(sRGB, 0xDCC670));
-        System.out.println("DIN99DTest " + lab1);
-        System.out.println("DIN99DTest " + lab2);
+        // TODO What is right???
+        testDiffInternal(lab1, lab2, 37.656192);
+    }
+
+    @Test
+    public final void testDiff2() {
+        final LAB lab1 = new LAB(D65_2, 100., 10., 10.);
+        final LAB lab2 = new LAB(D65_2, 90., 10., 5.);
+        // TODO What is right???
+        testDiffInternal(lab1, lab2, 7.19899);
+    }
+
+    @Test
+    public final void testDiff3() {
+        final LAB lab1 = new LAB(D65_2, 100., 10., 10.);
+        final LAB lab2 = new LAB(D65_2, 100., 10., 5.);
+        // TODO What is right???
+        testDiffInternal(lab1, lab2, 2.714282);
+    }
+
+    @Test
+    public final void testDiff4() {
+        final LAB lab1 = new LAB(D65_2, 100., 10., 10.);
+        final LAB lab2 = new LAB(D65_2, 100., 10., 10.);
+        testDiffInternal(lab1, lab2, 0.);
+    }
+
+    public final void testDiffInternal(final LAB lab1, final LAB lab2, final double expected) {
         final double deltaELab = lab1.getDiff(DeltaE.CIE1976Δ, lab2);
         System.out.println("DIN99DTest " + deltaELab);
-        final DIN99 din99d1 = DIN99.fromLAB(lab1);
-        final DIN99 din99d2 = DIN99.fromLAB(lab2);
-        System.out.println("DIN99DTest " + din99d1);
-        System.out.println("DIN99DTest " + din99d2);
-        final double deltaE = din99d1.getDiff(DeltaE.DIN99Δ, din99d2);
+        final DIN99 DIN99d1 = DIN99.fromLAB(lab1);
+        final DIN99 DIN99d2 = DIN99.fromLAB(lab2);
+        System.out.println("DIN99DTest " + DIN99d1);
+        System.out.println("DIN99DTest " + DIN99d2);
+        final double deltaE = DIN99d1.getDiff(DeltaE.DIN99Δ, DIN99d2);
         System.out.println("DIN99DTest " + deltaE);
-        // TODO What is right???
-        assertDoubleDiff(0.0001, 37.65622994848604, deltaE);
+        assertDoubleDiff(0.0001, expected, deltaE);
     }
 }

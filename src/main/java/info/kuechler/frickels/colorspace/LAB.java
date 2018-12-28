@@ -8,14 +8,9 @@ import java.util.Objects;
 // [Wyszecki Stiles], P.166ff & P.829
 public class LAB implements CIEColor {
 
-    private static final double κ = 24389. / 27.;
-    
-    private static final double ϵ = 216. / 24389.;
-
     private static final double κ_16 = κ / 16.;
     
     private static final double _16_116 = 16. / 116.;
-
 
     private final double[] fdata;
     private final Illuminant illuminant;

@@ -15,10 +15,6 @@ public class RGBConversionAdjuster {
 
     private static final double CONVERT_SRGB_SLOPE = 12.92321;
 
-    private static final double κ = 24389. / 27.;
-
-    private static final double ϵ = 216. / 24389.;
-
     public static final RGBConversionAdjuster XYZ_SRGB = new RGBConversionAdjuster("XYZ_SRGB", (cs, f) -> {
         double correct = 1.;
         if (f < 0.) {
@@ -61,8 +57,8 @@ public class RGBConversionAdjuster {
             f = -f;
             correct = -1.;
         }
-        if (f <= ϵ) {
-            return correct * f * κ / 100.;
+        if (f <= CIEColor.ϵ) {
+            return correct * f * CIEColor.κ / 100.;
         }
         return correct * 1.16 * Math.cbrt(f) - 0.16;
     });
@@ -75,7 +71,7 @@ public class RGBConversionAdjuster {
             correct = -1.;
         }
         if (f <= 0.08) {
-            return correct * f * 100. * κ;
+            return correct * f * 100. * CIEColor.κ;
         }
         return correct * Math.pow(((f + 0.16) / 1.16), 3);
     });
