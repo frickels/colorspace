@@ -1,0 +1,54 @@
+
+stages:
+  - build
+  - test
+
+variables:
+  MAVEN_CLI_OPTS: "--batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+
+build:jdk8:
+  image: maven:3-jdk-8-alpine
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:jdk8:
+  image: maven:3-jdk-8-alpine
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+
+build:jdk9:
+  image: maven:3-jdk-9-slim
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:jdk9:
+  image: maven:3-jdk-9-slim
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+
+build:jdk10:
+  image: maven:3-jdk-10-slim
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+build:jdk11:
+  image: maven:3-jdk-11-slim
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:jdk11:
+  image: maven:3-jdk-11-slim
+  stage: test
+  script:
+- mvn $MAVEN_CLI_OPTS test
