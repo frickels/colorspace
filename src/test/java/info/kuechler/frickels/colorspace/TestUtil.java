@@ -3,7 +3,6 @@ package info.kuechler.frickels.colorspace;
 import org.junit.jupiter.api.Assertions;
 
 public class TestUtil {
-
     public static void assertDoubleArrayEquals(final double threshold, final double[][] expected,
             final double[][] actual) {
         Assertions.assertNotNull(expected, "expected not null");

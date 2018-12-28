@@ -6,8 +6,11 @@ import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleArrayEquals
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RGBColorSpaceTest {
+    private static final Logger LOG = LoggerFactory.getLogger(RGBColorSpaceTest.class);
 
     private final static double[][] SRGB_MATRIX_TO = { //
             { 0.4124, 0.3576, 0.1805 }, //
@@ -50,12 +53,12 @@ public class RGBColorSpaceTest {
     @Test
     public final void testsRGB2AdobeRGB() {
         final XYZ xyz = new RGB(sRGB, .5, .5, .5).toXYZ();
-        System.out.println("RGB2AdobeRGB " + xyz);
+        LOG.info("RGB2AdobeRGB " + xyz);
         assertDoubleDiff(0.00001, 0.203440, xyz.getX());
         assertDoubleDiff(0.00001, 0.214041, xyz.getY());
         assertDoubleDiff(0.00001, 0.233054, xyz.getZ());
         final RGB rgb = RGB.fromXYZ(AdobeRGB1998, xyz);
-        System.out.println("RGB2AdobeRGB " + rgb);
+        LOG.info("RGB2AdobeRGB " + rgb);
         assertDoubleDiff(0.0005, 0.496228, rgb.getR());
         assertDoubleDiff(0.0005, 0.496227, rgb.getG());
         assertDoubleDiff(0.0005, 0.496227, rgb.getB());

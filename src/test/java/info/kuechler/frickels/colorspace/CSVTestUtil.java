@@ -10,8 +10,11 @@ import java.util.stream.Stream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.junit.jupiter.params.provider.Arguments;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CSVTestUtil {
+    private static final Logger LOG = LoggerFactory.getLogger(CSVTestUtil.class);
 
     public static final CSVFormat FORMAT = CSVFormat.DEFAULT.withDelimiter(';');
 
@@ -25,7 +28,7 @@ public class CSVTestUtil {
                 final HSL hsl = HSL.fromGradAnd0To100(sRGB, toDouble(record.get(4)), toDouble(record.get(5)),
                         toDouble(record.get(6)));
                 final RGB rgb = RGB.from0To100(sRGB, toInt(record.get(7)), toInt(record.get(8)), toInt(record.get(9)));
-                System.out.println("RGB-2-Hsv File " + rgb + " - " + hsv + " - " + hsl);
+                LOG.info("RGB-2-Hsv File " + rgb + " - " + hsv + " - " + hsl);
                 return Arguments.arguments(rgb, hsv, hsl);
             });
         }
@@ -36,7 +39,7 @@ public class CSVTestUtil {
     }
 
     private static double toDouble(String string) {
-        // System.out.println(string);
+        // LOG.info(string);
         return Double.valueOf(string.replace(',', '.').replace('–', '0').replaceAll("[^\\d\\.]+", ""));
     }
 }
