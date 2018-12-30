@@ -4,9 +4,22 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class XYZ implements CIEColor {
+    private static final long serialVersionUID = 2007100774667081289L;
+
     private final double[] fdata;
     private final Illuminant illuminant;
 
+    /**
+     * 
+     * @param illuminant
+     *            the white point
+     * @param x
+     *            x, [0..1]
+     * @param y
+     *            y, [0..1]
+     * @param z,
+     *            [0..1]
+     */
     public XYZ(final Illuminant illuminant, final double x, final double y, final double z) {
         this.illuminant = illuminant;
         this.fdata = new double[] { x, y, z };
@@ -74,5 +87,10 @@ public class XYZ implements CIEColor {
         }
         final XYZ other = (XYZ) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(illuminant, other.illuminant);
+    }
+
+    @Override
+    public XYZ clone() {
+        return new XYZ(illuminant, getX(), getY(), getZ());
     }
 }

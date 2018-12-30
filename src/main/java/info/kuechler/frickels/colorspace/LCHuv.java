@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class LCHuv implements CIEColor {
+    private static final long serialVersionUID = 6190528715730574774L;
+
     private final double[] fdata;
     private final Illuminant illuminant;
 
@@ -82,5 +84,10 @@ public class LCHuv implements CIEColor {
         }
         final LCHuv other = (LCHuv) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(illuminant, other.illuminant);
+    }
+
+    @Override
+    public LCHuv clone() {
+        return new LCHuv(illuminant, getL(), getC(), getH());
     }
 }

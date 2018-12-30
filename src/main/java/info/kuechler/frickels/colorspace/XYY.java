@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class XYY implements CIEColor {
+    private static final long serialVersionUID = 1410944524278636030L;
+
     private final double[] fdata;
     private final Illuminant illuminant;
 
@@ -83,5 +85,10 @@ public class XYY implements CIEColor {
         }
         final XYY other = (XYY) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(illuminant, other.illuminant);
+    }
+
+    @Override
+    public XYY clone() {
+        return new XYY(illuminant, getX(), getY(), getY2());
     }
 }

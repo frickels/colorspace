@@ -9,6 +9,8 @@ import java.util.Objects;
 //
 // DIN99b P.284: https://www.researchgate.net/publication/229891006_Uniform_colour_spaces_based_on_the_DIN99_colour-difference_formula
 public class DIN99 implements CIEColor {
+    private static final long serialVersionUID = -8458356090713035746L;
+
     private static final double SIN_16DEG = Math.sin(Math.toRadians(16.));
     private static final double COS_16DEG = Math.cos(Math.toRadians(16.));
     private static final double FAC_1 = 100. / Math.log(129. / 50.); // = 105.51
@@ -119,5 +121,10 @@ public class DIN99 implements CIEColor {
         }
         final DIN99 other = (DIN99) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(illuminant, other.illuminant);
+    }
+
+    @Override
+    public DIN99 clone() {
+        return new DIN99(illuminant, getL(), getA(), getB());
     }
 }

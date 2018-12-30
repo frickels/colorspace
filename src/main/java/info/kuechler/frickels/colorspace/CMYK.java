@@ -2,7 +2,9 @@ package info.kuechler.frickels.colorspace;
 
 import java.util.Arrays;
 
-public class CMYK {
+public class CMYK implements Color {
+    private static final long serialVersionUID = -917362724369292519L;
+
     private final double[] fdata;
 
     public static CMYK fromRGB(final RGB rgb) {
@@ -56,6 +58,7 @@ public class CMYK {
         return fdata[3];
     }
 
+    @Override
     public double[] toDouble() {
         return toDoubleInternal().clone();
     }
@@ -90,5 +93,10 @@ public class CMYK {
         }
         final CMYK other = (CMYK) obj;
         return Arrays.equals(fdata, other.fdata);
+    }
+
+    @Override
+    public CMYK clone() {
+        return new CMYK(getC(), getM(), getY(), getK());
     }
 }

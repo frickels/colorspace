@@ -3,7 +3,9 @@ package info.kuechler.frickels.colorspace;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class HSL {
+public class HSL implements Color {
+    private static final long serialVersionUID = 5171351503891250256L;
+
     private final double[] fdata;
     private final RGBColorSpace colorSpace;
 
@@ -96,6 +98,7 @@ public class HSL {
         return fdata[2];
     }
 
+    @Override
     public double[] toDouble() {
         return toDoubleInternal().clone();
     }
@@ -131,5 +134,10 @@ public class HSL {
         }
         final HSL other = (HSL) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(colorSpace, other.colorSpace);
+    }
+
+    @Override
+    public HSL clone() {
+        return new HSL(colorSpace, getH(), getS(), getL());
     }
 }

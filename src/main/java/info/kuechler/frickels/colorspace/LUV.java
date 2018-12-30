@@ -7,6 +7,8 @@ import java.util.Objects;
 // https://de.wikipedia.org/wiki/CIELUV-Farbraumsystem
 // https://en.wikipedia.org/wiki/CIELUV
 public class LUV implements CIEColor {
+    private static final long serialVersionUID = 4472194476809655875L;
+    
     private final double[] fdata;
     private final Illuminant illuminant;
 
@@ -156,5 +158,10 @@ public class LUV implements CIEColor {
         }
         LUV other = (LUV) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(illuminant, other.illuminant);
+    }
+    
+    @Override
+    public LUV clone() {
+        return new LUV(illuminant, getL(), getU(), getV());
     }
 }

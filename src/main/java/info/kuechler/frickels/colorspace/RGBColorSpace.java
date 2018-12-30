@@ -1,6 +1,8 @@
 package info.kuechler.frickels.colorspace;
 
-public interface RGBColorSpace {
+import java.io.Serializable;
+
+public interface RGBColorSpace extends Serializable {
     RGB fromXYZ(final XYZ xyz);
 
     XYZ toXYZ(final RGB rgb);

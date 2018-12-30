@@ -5,7 +5,7 @@ import static info.kuechler.frickels.colorspace.MatrixUtil.matrix33mult31;
 
 import java.util.Objects;
 
-public class ChromaticAdaptation {
+public class ChromaticAdaptation implements Cloneable {
 
     public static final ChromaticAdaptation XYZ_SCALING = new ChromaticAdaptation(new double[][] { //
             { 1., 0., 0. }, //
@@ -82,4 +82,8 @@ public class ChromaticAdaptation {
         return Double.doubleToLongBits(determinatMatrix) == Double.doubleToLongBits(other.determinatMatrix);
     }
 
+    @Override
+    public ChromaticAdaptation clone() {
+        return new ChromaticAdaptation(fdata.clone());
+    }
 }

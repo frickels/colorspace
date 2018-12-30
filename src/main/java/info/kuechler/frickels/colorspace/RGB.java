@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class RGB implements CIEColor {
+    private static final long serialVersionUID = 5029814954680564614L;
+
     private final double[] fdata;
     private final RGBColorSpace colorSpace;
 
@@ -12,14 +14,23 @@ public class RGB implements CIEColor {
         this.colorSpace = colorSpace;
     }
 
+    /**
+     * Creates a RGB from an int.
+     * 
+     * @param colorSpace
+     *            the {@link RGBColorSpace}
+     * @param rgb
+     *            the RGB value, format in hexadecimal: 00rrggbb, the highest byte is ignored.
+     * @return RGB object
+     */
     public static RGB fromRGBNumber(final RGBColorSpace colorSpace, final int rgb) {
-        return from0TO255(colorSpace, rgb % 0xff, (rgb >> 8) % 0xff, (rgb >> 16) % 0xff);
+        return from0TO255(colorSpace, (rgb >> 16) % 0xff, (rgb >> 8) % 0xff, rgb % 0xff);
     }
 
     public static RGB from0TO255(final RGBColorSpace colorSpace, final int r, final int g, final int b) {
         return new RGB(colorSpace, r / 255., g / 255., b / 255.);
     }
-    
+
     public static RGB from0To100(final RGBColorSpace colorSpace, final int r, final int g, final int b) {
         return new RGB(colorSpace, r / 100., g / 100., b / 100.);
     }
@@ -50,14 +61,29 @@ public class RGB implements CIEColor {
         return colorSpace.toXYZ(this);
     }
 
+    /**
+     * The R part
+     * 
+     * @return [0..1]
+     */
     public double getR() {
         return toDoubleInternal()[0];
     }
 
+    /**
+     * The G part
+     * 
+     * @return [0..1]
+     */
     public double getG() {
         return toDoubleInternal()[1];
     }
 
+    /**
+     * The B part
+     * 
+     * @return [0..1]
+     */
     public double getB() {
         return toDoubleInternal()[2];
     }
@@ -107,5 +133,10 @@ public class RGB implements CIEColor {
         }
         final RGB other = (RGB) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(colorSpace, other.colorSpace);
+    }
+    
+    @Override
+    public RGB clone() {
+        return new RGB(colorSpace, getR(), getG(), getB());
     }
 }

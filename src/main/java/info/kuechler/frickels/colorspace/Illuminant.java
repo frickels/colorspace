@@ -3,9 +3,11 @@ package info.kuechler.frickels.colorspace;
 import static info.kuechler.frickels.colorspace.Illuminant.Type.CIE_1931_2;
 import static info.kuechler.frickels.colorspace.Illuminant.Type.CIE_1964_10;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Illuminant {
+public class Illuminant implements Serializable, Cloneable {
+    private static final long serialVersionUID = -3546865867972788162L;
 
     public enum Type {
         CIE_1931_2, CIE_1964_10
@@ -119,7 +121,7 @@ public class Illuminant {
         // https://en.wikipedia.org/wiki/Illuminant_D65
         // ? [Wyszecki Stiles], P.144 (1.4388 / 1.4350), shows wrong
         //
-        // 1.4388 = (Plank constant * velocity of light) / Boltzmann constant 
+        // 1.4388 = (Plank constant * velocity of light) / Boltzmann constant
         return f * (1.4388 / 1.438);
     }
 
@@ -141,5 +143,10 @@ public class Illuminant {
         }
         final Illuminant other = (Illuminant) obj;
         return cct == other.cct && type == other.type && Objects.equals(xyy, other.xyy);
+    }
+
+    @Override
+    public Illuminant clone() {
+        return new Illuminant(type, xyy.getX(), xyy.getY(), xyy.getY2(), cct);
     }
 }

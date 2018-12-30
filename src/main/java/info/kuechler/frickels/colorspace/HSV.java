@@ -3,7 +3,9 @@ package info.kuechler.frickels.colorspace;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class HSV {
+public class HSV implements Color {
+    private static final long serialVersionUID = 2254254079833656821L;
+
     private final double[] fdata;
     private final RGBColorSpace colorSpace;
 
@@ -68,7 +70,8 @@ public class HSV {
         }
     }
 
-    public static HSV fromGradAnd0To100(final RGBColorSpace colorSpace, final double h, final double s, final double v) {
+    public static HSV fromGradAnd0To100(final RGBColorSpace colorSpace, final double h, final double s,
+            final double v) {
         return new HSV(colorSpace, h, s / 100., v / 100.);
     }
 
@@ -89,6 +92,7 @@ public class HSV {
         return fdata[2];
     }
 
+    @Override
     public double[] toDouble() {
         return toDoubleInternal().clone();
     }
@@ -124,5 +128,10 @@ public class HSV {
         }
         final HSV other = (HSV) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(colorSpace, other.colorSpace);
+    }
+
+    @Override
+    public HSV clone() {
+        return new HSV(colorSpace, getH(), getS(), getV());
     }
 }

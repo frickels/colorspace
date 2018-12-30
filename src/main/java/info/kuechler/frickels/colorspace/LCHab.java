@@ -6,6 +6,8 @@ import java.util.Objects;
 // https://web.archive.org/web/20080311083637/http://www.farbmetrik-gall.de:80/cielab/index.html
 // http://www.brucelindbloom.com/index.html?Eqn_Lab_to_LCH.html
 public class LCHab implements CIEColor {
+    private static final long serialVersionUID = -3410680184002408899L;
+
     private final double[] fdata;
     private final Illuminant illuminant;
 
@@ -13,7 +15,7 @@ public class LCHab implements CIEColor {
         final double L = lab.getL();
         final double a = lab.getA();
         final double b = lab.getB();
-        
+
         final double C = Math.sqrt(a * a + b * b);
         final double H = Math.toDegrees(Math.atan2(b, a));
         return new LCHab(lab.getIlluminant(), L, C, (H < 0.) ? H + 360. : H);
@@ -22,7 +24,7 @@ public class LCHab implements CIEColor {
     public LAB toLAB() {
         final double C = getC();
         final double Hrad = Math.toRadians(getH());
-        
+
         return new LAB(illuminant, getL(), C * Math.cos(Hrad), C * Math.sin(Hrad));
     }
 
@@ -84,5 +86,10 @@ public class LCHab implements CIEColor {
         }
         final LCHab other = (LCHab) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(illuminant, other.illuminant);
+    }
+
+    @Override
+    public LCHab clone() {
+        return new LCHab(illuminant, getL(), getC(), getH());
     }
 }

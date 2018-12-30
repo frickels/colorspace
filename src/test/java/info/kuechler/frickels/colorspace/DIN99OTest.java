@@ -41,7 +41,7 @@ public class DIN99OTest {
         final LAB lab1 = LAB.fromXYZ(RGB.fromRGBNumber(sRGB, 0x5C70C8).toXYZ());
         final LAB lab2 = LAB.fromXYZ(RGB.fromRGBNumber(sRGB, 0xDCC670).toXYZ());
         // TODO What is right???
-        testDiffInternal(lab1, lab2, 58.3878);
+        testDiffInternal(lab1, lab2, 51.1104);
     }
 
     @Test

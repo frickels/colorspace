@@ -14,9 +14,12 @@ import static info.kuechler.frickels.colorspace.RGBConversionAdjuster.XYZ_RGB_L;
 import static info.kuechler.frickels.colorspace.RGBConversionAdjuster.XYZ_RGB_STD;
 import static info.kuechler.frickels.colorspace.RGBConversionAdjuster.XYZ_SRGB;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Objects;
 
-public class RGBColorSpaceImpl implements RGBColorSpace {
+public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
+    private static final long serialVersionUID = 4632087745617854955L;
 
     public static final RGBColorSpace sRGB = new RGBColorSpaceImpl(//
             // https://en.wikipedia.org/wiki/SRGB
@@ -142,10 +145,10 @@ public class RGBColorSpaceImpl implements RGBColorSpace {
     private final double gamma;
     private final RGBConversionAdjuster valueAdjuster;
     private final RGBConversionAdjuster valueReverseAdjuster;
-    private final double[][] transformationMatrix;
-    private final double[][] reverseTransformationMatrix;
+    private transient double[][] transformationMatrix;
+    private transient double[][] reverseTransformationMatrix;
     /** replaces (reverse) transformation matrix in {@link #equals(Object)} and {@link #hashCode()} method. */
-    private final double determinatTransformationMatrix;
+    private transient double determinatTransformationMatrix;
 
     public RGBColorSpaceImpl(final XYY xr, final XYY xg, final XYY xb, final Illuminant illuminant, final double gamma,
             RGBConversionAdjuster valueAdjuster, RGBConversionAdjuster valueReverseAdjuster) {
@@ -156,6 +159,10 @@ public class RGBColorSpaceImpl implements RGBColorSpace {
         this.gamma = gamma;
         this.valueAdjuster = valueAdjuster;
         this.valueReverseAdjuster = valueReverseAdjuster;
+        init();
+    }
+
+    private /* final */ void init() {
         this.transformationMatrix = calculateTransformationMatrix(xr, xg, xb, illuminant);
         this.reverseTransformationMatrix = invert33(this.transformationMatrix);
         this.determinatTransformationMatrix = MatrixUtil.determinant33(this.transformationMatrix);
@@ -262,5 +269,15 @@ public class RGBColorSpaceImpl implements RGBColorSpace {
                 && Double.doubleToLongBits(gamma) == Double.doubleToLongBits(other.gamma)
                 && Objects.equals(valueAdjuster, other.valueAdjuster)
                 && Objects.equals(valueReverseAdjuster, other.valueReverseAdjuster);
+    }
+
+    private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
+        ois.defaultReadObject();
+        init();
+    }
+
+    @Override
+    public RGBColorSpaceImpl clone() {
+        return new RGBColorSpaceImpl(xr, xg, xb, illuminant, gamma, valueAdjuster, valueReverseAdjuster);
     }
 }

@@ -8,6 +8,8 @@ import java.util.Objects;
 //
 // https://de.wikipedia.org/wiki/Diskussion:DIN99-Farbraum
 public class DIN99O implements CIEColor {
+    private static final long serialVersionUID = 3361137833703250376L;
+
     private static final double RAD_26DEG = Math.toRadians(26.);
     private static final double SIN_26DEG = Math.sin(RAD_26DEG);
     private static final double COS_26DEG = Math.cos(RAD_26DEG);
@@ -119,5 +121,10 @@ public class DIN99O implements CIEColor {
         }
         final DIN99O other = (DIN99O) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(illuminant, other.illuminant);
+    }
+
+    @Override
+    public DIN99O clone() {
+        return new DIN99O(illuminant, getL(), getA(), getB());
     }
 }

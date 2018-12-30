@@ -1,8 +1,15 @@
 package info.kuechler.frickels.colorspace;
 
+import java.io.Serializable;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-public class RGBConversionAdjuster {
+public class RGBConversionAdjuster implements Serializable, Cloneable {
+
+    private static final long serialVersionUID = -7628671151496518075L;
+
+    private static final ConcurrentMap<String, RGBValueAdjusterOperator> OPERATORS = new ConcurrentHashMap<>();
 
     @FunctionalInterface
     public interface RGBValueAdjusterOperator {
@@ -76,25 +83,26 @@ public class RGBConversionAdjuster {
         return correct * Math.pow(((f + 0.16) / 1.16), 3);
     });
 
-    private final String name;
-    private final RGBValueAdjusterOperator operator;
+    private final String id;
+    private transient final RGBValueAdjusterOperator operator;
 
-    public RGBConversionAdjuster(final String name, final RGBValueAdjusterOperator operator) {
-        this.name = name;
+    public RGBConversionAdjuster(final String id, final RGBValueAdjusterOperator operator) {
+        OPERATORS.put(id, operator);
         this.operator = operator;
+        this.id = id;
     }
 
     public double adjust(final RGBColorSpace colorSpace, final double d) {
         return operator.adjust(colorSpace, d);
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 
     @Override
@@ -109,6 +117,18 @@ public class RGBConversionAdjuster {
             return false;
         }
         final RGBConversionAdjuster other = (RGBConversionAdjuster) obj;
-        return Objects.equals(name, other.name);
+        return Objects.equals(id, other.id);
+    }
+
+    public Object readResolve() {
+        if (!OPERATORS.containsKey(id)) {
+            throw new RuntimeException("Cannot read, operator is not registered: " + id);
+        }
+        return new RGBConversionAdjuster(id, OPERATORS.get(id));
+    }
+
+    @Override
+    public RGBConversionAdjuster clone() {
+        return new RGBConversionAdjuster(id, operator);
     }
 }

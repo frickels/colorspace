@@ -7,9 +7,10 @@ import java.util.Objects;
 // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
 // [Wyszecki Stiles], P.166ff & P.829
 public class LAB implements CIEColor {
+    private static final long serialVersionUID = 2186691650928217940L;
 
     private static final double κ_16 = κ / 16.;
-    
+
     private static final double _16_116 = 16. / 116.;
 
     private final double[] fdata;
@@ -116,5 +117,10 @@ public class LAB implements CIEColor {
         }
         LAB other = (LAB) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(illuminant, other.illuminant);
+    }
+
+    @Override
+    public LAB clone() {
+        return new LAB(illuminant, getL(), getA(), getB());
     }
 }
