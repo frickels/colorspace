@@ -4,18 +4,14 @@ import static info.kuechler.frickels.colorspace.RGBColorSpaceImpl.sRGB;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CMYTest {
-    private static final Logger LOG = LoggerFactory.getLogger(CMYTest.class);
-    
     @Test
     public final void testGrey() {
         final RGB rgb = new RGB(sRGB, 0.5, 0.5, 0.5);
 
         final CMY cmy = CMY.fromRGB(rgb);
-        LOG.info("CMYTest " + cmy);
+        System.out.println("CMYTest " + cmy);
         assertDoubleDiff(0.00001, 0.5, cmy.getC());
         assertDoubleDiff(0.00001, 0.5, cmy.getM());
         assertDoubleDiff(0.00001, 0.5, cmy.getY());
@@ -31,7 +27,7 @@ public class CMYTest {
         final RGB rgb = new RGB(sRGB, 0., 0., 0.);
 
         final CMY cmy = CMY.fromRGB(rgb);
-        LOG.info("CMYTest " + cmy);
+        System.out.println("CMYTest " + cmy);
         assertDoubleDiff(0.00001, 1., cmy.getC());
         assertDoubleDiff(0.00001, 1., cmy.getM());
         assertDoubleDiff(0.00001, 1., cmy.getY());
@@ -47,7 +43,7 @@ public class CMYTest {
         final RGB rgb = new RGB(sRGB, 1., 0.5, 0.);
 
         final CMY cmy = CMY.fromRGB(rgb);
-        LOG.info("CMYTest " + cmy);
+        System.out.println("CMYTest " + cmy);
         assertDoubleDiff(0.00001, 0., cmy.getC());
         assertDoubleDiff(0.00001, 0.5, cmy.getM());
         assertDoubleDiff(0.00001, 1., cmy.getY());
@@ -63,7 +59,7 @@ public class CMYTest {
         final RGB rgb = new RGB(sRGB, 1., 0.5, 0.);
 
         final CMYK cmyk = CMY.fromRGB(rgb).toCMYK();
-        LOG.info("CMYTest " + cmyk);
+        System.out.println("CMYTest " + cmyk);
         assertDoubleDiff(0.00001, 0., cmyk.getC());
         assertDoubleDiff(0.00001, 0.5, cmyk.getM());
         assertDoubleDiff(0.00001, 1., cmyk.getY());

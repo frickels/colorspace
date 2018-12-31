@@ -1,5 +1,11 @@
 package info.kuechler.frickels.colorspace;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.junit.jupiter.api.Assertions;
 
 public class TestUtil {
@@ -43,6 +49,23 @@ public class TestUtil {
             bui.append("]\n");
         }
         return bui.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T deserialize(final byte[] bytes) throws IOException, ClassNotFoundException {
+        try (final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+                final ObjectInputStream ois = new ObjectInputStream(bais);) {
+            return (T) ois.readObject();
+        }
+    }
+
+    public static byte[] serialize(final Object object) throws IOException {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                final ObjectOutputStream oos = new ObjectOutputStream(baos);) {
+            oos.writeObject(object);
+            oos.flush();
+            return baos.toByteArray();
+        }
     }
 
     private TestUtil() {

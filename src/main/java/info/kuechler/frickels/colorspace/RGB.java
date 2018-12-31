@@ -134,7 +134,7 @@ public class RGB implements CIEColor {
         final RGB other = (RGB) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(colorSpace, other.colorSpace);
     }
-    
+
     @Override
     public RGB clone() {
         return new RGB(colorSpace, getR(), getG(), getB());

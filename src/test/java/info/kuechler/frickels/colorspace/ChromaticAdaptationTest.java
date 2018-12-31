@@ -7,12 +7,8 @@ import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleArrayEquals
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ChromaticAdaptationTest {
-    
-    private static final Logger LOG = LoggerFactory.getLogger(ChromaticAdaptationTest.class);
 
     private static final double[][] BRADFORD_REVERSE = new double[][] { //
             { 0.9869929, -0.1470543, 0.1599627 }, //
@@ -50,13 +46,13 @@ public class ChromaticAdaptationTest {
     @Test
     public final void testSRgb2Xyz() {
         final XYZ source = new RGB(RGBColorSpaceImpl.sRGB, 0.5, 0.5, 0.5).toXYZ();
-        LOG.info("ChromaticAdaptationTest source " + source);
+        System.out.println("ChromaticAdaptationTest source " + source);
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
 
         final XYZ target = BRADFORD.adapt(source, Illuminant.D50_2);
-        LOG.info("ChromaticAdaptationTest target " + target);
+        System.out.println("ChromaticAdaptationTest target " + target);
         assertDoubleDiff(0.00001, 0.206385, target.getX());
         assertDoubleDiff(0.00001, 0.214040, target.getY());
         assertDoubleDiff(0.00001, 0.176624, target.getZ());

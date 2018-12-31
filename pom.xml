@@ -47,29 +47,6 @@
 		    <scope>test</scope>
 		</dependency>
 
-		<!-- logging for tests -->
-		<dependency>
-			<!-- we use slf4j -->
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.25</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<!-- log4j-2 adapter -->
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.11.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<!-- log4j-2 impl -->
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.11.1</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>

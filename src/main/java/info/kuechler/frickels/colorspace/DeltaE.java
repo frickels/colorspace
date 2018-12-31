@@ -15,7 +15,7 @@ public class DeltaE<T> {
     public static final DeltaE<DIN99O> DIN99OΔ = new DeltaE<>((din99o1, din99o2) -> {
         return MatrixUtil.euclideanDistance3(din99o1.toDouble(), din99o2.toDouble());
     });
-    
+
     public static final DeltaE<LUV> LUVΔ = new DeltaE<>((luv1, luv2) -> {
         return MatrixUtil.euclideanDistance3(luv1.toDouble(), luv2.toDouble());
     });

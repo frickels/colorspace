@@ -8,19 +8,15 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HSLTest {
-    private static final Logger LOG = LoggerFactory.getLogger(HSLTest.class);
-    
     @Test
     public final void testBlack() {
         final RGB rgb = new RGB(sRGB, 0., 0., 0.);
 
-        LOG.info("HSLTest " + rgb);
+        System.out.println("HSLTest " + rgb);
         final HSL hsl = HSL.fromRGB(rgb);
-        LOG.info("HSLTest " + hsl);
+        System.out.println("HSLTest " + hsl);
         assertDoubleDiff(0.00001, 0., hsl.getH());
         assertDoubleDiff(0.00001, 0., hsl.getS());
         assertDoubleDiff(0.00001, 0., hsl.getL());
@@ -30,9 +26,9 @@ public class HSLTest {
     public final void testWhite() {
         final RGB rgb = new RGB(sRGB, 1., 1., 1.);
 
-        LOG.info("HSLTest " + rgb);
+        System.out.println("HSLTest " + rgb);
         final HSL hsl = HSL.fromRGB(rgb);
-        LOG.info("HSLTest " + hsl);
+        System.out.println("HSLTest " + hsl);
         assertDoubleDiff(0.00001, 0., hsl.getH());
         assertDoubleDiff(0.00001, 0., hsl.getS());
         assertDoubleDiff(0.00001, 1., hsl.getL());
@@ -42,9 +38,9 @@ public class HSLTest {
     public final void testRed() {
         final RGB rgb = new RGB(sRGB, 1., 0., 0.);
 
-        LOG.info("HSLTest " + rgb);
+        System.out.println("HSLTest " + rgb);
         final HSL hsl = HSL.fromRGB(rgb);
-        LOG.info("HSLTest " + hsl);
+        System.out.println("HSLTest " + hsl);
         assertDoubleDiff(0.00001, 0., hsl.getH());
         assertDoubleDiff(0.00001, 1., hsl.getS());
         assertDoubleDiff(0.00001, .5, hsl.getL());
@@ -54,9 +50,9 @@ public class HSLTest {
     public final void testIndigo() {
         final RGB rgb = new RGB(sRGB, .25, 0., 1.);
 
-        LOG.info("HSLTest " + rgb);
+        System.out.println("HSLTest " + rgb);
         final HSL hsl = HSL.fromRGB(rgb);
-        LOG.info("HSLTest " + hsl);
+        System.out.println("HSLTest " + hsl);
         assertDoubleDiff(0.00001, 255., hsl.getH());
         assertDoubleDiff(0.00001, 1., hsl.getS());
         assertDoubleDiff(0.00001, .5, hsl.getL());

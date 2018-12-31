@@ -8,6 +8,6 @@ public interface RGBColorSpace extends Serializable {
     XYZ toXYZ(final RGB rgb);
 
     Illuminant getIlluminant();
-    
+
     double getGamma();
 }

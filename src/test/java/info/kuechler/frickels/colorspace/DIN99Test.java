@@ -5,19 +5,15 @@ import static info.kuechler.frickels.colorspace.RGBColorSpaceImpl.sRGB;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DIN99Test {
-    private static final Logger LOG = LoggerFactory.getLogger(DIN99Test.class);
-    
     @Test
     public final void testBlack() {
         final LAB lab = new LAB(D65_2, 0., 0., 0.);
         final DIN99 din99 = DIN99.fromLAB(lab);
-        LOG.info("DIN99Test " + din99);
+        System.out.println("DIN99Test " + din99);
         final LAB lab2 = din99.toLAB();
-        LOG.info("DIN99Test " + lab2);
+        System.out.println("DIN99Test " + lab2);
         assertDoubleDiff(0.00001, 0., lab2.getL());
         assertDoubleDiff(0.00001, 0., lab2.getA());
         assertDoubleDiff(0.00001, 0., lab2.getB());
@@ -26,11 +22,11 @@ public class DIN99Test {
     @Test
     public final void test() {
         final LAB lab = new LAB(D65_2, 90.0606492996, -66.0112378364, 74.8156751483);
-        LOG.info("DIN99Test " + lab);
+        System.out.println("DIN99Test " + lab);
         final DIN99 din99 = DIN99.fromLAB(lab);
-        LOG.info("DIN99Test " + din99);
+        System.out.println("DIN99Test " + din99);
         final LAB lab2 = din99.toLAB();
-        LOG.info("DIN99Test " + lab2);
+        System.out.println("DIN99Test " + lab2);
         assertDoubleDiff(0.0001, 90.0606492996, lab2.getL());
         assertDoubleDiff(0.0001, -66.0112378364, lab2.getA());
         assertDoubleDiff(0.0001, 74.8156751483, lab2.getB());
@@ -69,13 +65,13 @@ public class DIN99Test {
 
     public final void testDiffInternal(final LAB lab1, final LAB lab2, final double expected) {
         final double deltaELab = lab1.getDiff(DeltaE.CIE1976Δ, lab2);
-        LOG.info("DIN99DTest " + deltaELab);
+        System.out.println("DIN99DTest " + deltaELab);
         final DIN99 DIN99d1 = DIN99.fromLAB(lab1);
         final DIN99 DIN99d2 = DIN99.fromLAB(lab2);
-        LOG.info("DIN99DTest " + DIN99d1);
-        LOG.info("DIN99DTest " + DIN99d2);
+        System.out.println("DIN99DTest " + DIN99d1);
+        System.out.println("DIN99DTest " + DIN99d2);
         final double deltaE = DIN99d1.getDiff(DeltaE.DIN99Δ, DIN99d2);
-        LOG.info("DIN99DTest " + deltaE);
+        System.out.println("DIN99DTest " + deltaE);
         assertDoubleDiff(0.0001, expected, deltaE);
     }
 }

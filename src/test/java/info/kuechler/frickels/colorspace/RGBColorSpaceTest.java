@@ -5,13 +5,12 @@ import static info.kuechler.frickels.colorspace.RGBColorSpaceImpl.sRGB;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleArrayEquals;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
 
+import java.io.IOException;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RGBColorSpaceTest {
-    private static final Logger LOG = LoggerFactory.getLogger(RGBColorSpaceTest.class);
-
     private final static double[][] SRGB_MATRIX_TO = { //
             { 0.4124, 0.3576, 0.1805 }, //
             { 0.2126, 0.7152, 0.0722 }, //
@@ -53,14 +52,23 @@ public class RGBColorSpaceTest {
     @Test
     public final void testsRGB2AdobeRGB() {
         final XYZ xyz = new RGB(sRGB, .5, .5, .5).toXYZ();
-        LOG.info("RGB2AdobeRGB " + xyz);
+        System.out.println("RGB2AdobeRGB " + xyz);
         assertDoubleDiff(0.00001, 0.203440, xyz.getX());
         assertDoubleDiff(0.00001, 0.214041, xyz.getY());
         assertDoubleDiff(0.00001, 0.233054, xyz.getZ());
         final RGB rgb = RGB.fromXYZ(AdobeRGB1998, xyz);
-        LOG.info("RGB2AdobeRGB " + rgb);
+        System.out.println("RGB2AdobeRGB " + rgb);
         assertDoubleDiff(0.0005, 0.496228, rgb.getR());
         assertDoubleDiff(0.0005, 0.496227, rgb.getG());
         assertDoubleDiff(0.0005, 0.496227, rgb.getB());
+    }
+
+    @Test
+    public final void testSerialize() throws IOException, ClassNotFoundException {
+        final byte[] bytes = TestUtil.serialize(sRGB);
+        final RGBColorSpaceImpl cs2 = TestUtil.deserialize(bytes);
+        Assertions.assertNotNull(cs2.getTransformationMatrix());
+        Assertions.assertNotNull(cs2.getReverseTransformationMatrix());
+        Assertions.assertEquals(sRGB, cs2);
     }
 }
