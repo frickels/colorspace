@@ -4,9 +4,9 @@ import static info.kuechler.frickels.colorspace.Illuminant.C_2;
 import static info.kuechler.frickels.colorspace.Illuminant.D50_2;
 import static info.kuechler.frickels.colorspace.Illuminant.D65_2;
 import static info.kuechler.frickels.colorspace.Illuminant.E_2;
-import static info.kuechler.frickels.colorspace.MatrixUtil.invert33;
-import static info.kuechler.frickels.colorspace.MatrixUtil.matrix33mult31;
-import static info.kuechler.frickels.colorspace.MatrixUtil.transpose33;
+import static info.kuechler.frickels.colorspace.MatrixUtil.invertMatrix33;
+import static info.kuechler.frickels.colorspace.MatrixUtil.multMatrix33Vec3;
+import static info.kuechler.frickels.colorspace.MatrixUtil.transposeMatrix33;
 import static info.kuechler.frickels.colorspace.RGBConversionAdjuster.RGB_XYZ_L;
 import static info.kuechler.frickels.colorspace.RGBConversionAdjuster.RGB_XYZ_STD;
 import static info.kuechler.frickels.colorspace.RGBConversionAdjuster.SRGB_XYZ;
@@ -164,15 +164,15 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
 
     private /* final */ void init() {
         this.transformationMatrix = calculateTransformationMatrix(xr, xg, xb, illuminant);
-        this.reverseTransformationMatrix = invert33(this.transformationMatrix);
-        this.determinatTransformationMatrix = MatrixUtil.determinant33(this.transformationMatrix);
+        this.reverseTransformationMatrix = invertMatrix33(this.transformationMatrix);
+        this.determinatTransformationMatrix = MatrixUtil.determinantMatrix33(this.transformationMatrix);
     }
 
     @Override
     public RGB fromXYZ(final XYZ xyz) {
         final XYZ xyzIlluminated = xyz.changeIlluminant(getIlluminant());
         final double[] data = xyzIlluminated.toDouble();
-        final double[] convert = matrix33mult31(getReverseTransformationMatrix(), data);
+        final double[] convert = multMatrix33Vec3(getReverseTransformationMatrix(), data);
         final RGBConversionAdjuster adjuster = getValueAdjuster();
         return new RGB(this, adjuster.adjust(this, convert[0]), adjuster.adjust(this, convert[1]),
                 adjuster.adjust(this, convert[2]));
@@ -184,18 +184,18 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
         final RGBConversionAdjuster adjuster = getValueReverseAdjuster();
         final double[] dataAdj = new double[] { adjuster.adjust(this, data[0]), adjuster.adjust(this, data[1]),
                 adjuster.adjust(this, data[2]) };
-        final double[] convert = matrix33mult31(getTransformationMatrix(), dataAdj);
+        final double[] convert = multMatrix33Vec3(getTransformationMatrix(), dataAdj);
         return new XYZ(getIlluminant(), convert[0], convert[1], convert[2]);
     }
 
     private double[][] calculateTransformationMatrix(final XYY xr, final XYY xg, final XYY xb,
             final Illuminant refWhite) {
-        final double[][] m = transpose33(new double[][] { //
+        final double[][] m = transposeMatrix33(new double[][] { //
                 Yto1(xr).toXYZ().toDouble(), //
                 Yto1(xg).toXYZ().toDouble(), //
                 Yto1(xb).toXYZ().toDouble()//
         });
-        final double[] s = matrix33mult31(invert33(m), refWhite.getXyy().toXYZ().toDouble());
+        final double[] s = multMatrix33Vec3(invertMatrix33(m), refWhite.getXyy().toXYZ().toDouble());
 
         return new double[][] { //
                 { s[0] * m[0][0], s[1] * m[0][1], s[2] * m[0][2] }, //

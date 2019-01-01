@@ -61,7 +61,7 @@
 				</configuration>
 			</plugin>
 			
-			<!-- higher version to use maven-fluido-skin:1.6 for maven site -->
+			<!-- higher version to use maven-fluido-skin:1.7 for maven site -->
 			<plugin>
 	    			<groupId>org.apache.maven.plugins</groupId>
 	    			<artifactId>maven-site-plugin</artifactId>

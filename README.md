@@ -20,3 +20,6 @@ Colorspace is a library to converts colors between colorspaces.
 
 * http://www.mathwords.com
 
+* Georg A. Klein; Industria Color Physics; ISBN 978-1-4419-1196-4
+
+

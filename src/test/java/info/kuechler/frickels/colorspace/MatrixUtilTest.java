@@ -11,7 +11,7 @@ public class MatrixUtilTest {
                 { 4., 5., 6. }, //
                 { 7., 8., 9. } //
         };
-        final double[][] out = MatrixUtil.transpose33(in);
+        final double[][] out = MatrixUtil.transposeMatrix33(in);
         Assertions.assertArrayEquals(new double[][] { //
                 { 1., 4., 7. }, //
                 { 2., 5., 8. }, //
@@ -26,7 +26,7 @@ public class MatrixUtilTest {
                 { 0., 4., 5. }, //
                 { 1., 0., 6. } //
         };
-        final double out = MatrixUtil.determinant33(in);
+        final double out = MatrixUtil.determinantMatrix33(in);
         Assertions.assertEquals(22., out);
     }
 
@@ -37,7 +37,7 @@ public class MatrixUtilTest {
                 { 0., 4., 5. }, //
                 { 1., 0., 6. } //
         };
-        final double[][] out = MatrixUtil.invert33(in);
+        final double[][] out = MatrixUtil.invertMatrix33(in);
         TestUtil.assertDoubleArrayEquals(0.0000000000000001, new double[][] { //
                 { 24. / 22., -12. / 22., -2. / 22. }, //
                 { 5. / 22., 3. / 22., -5. / 22. }, //
