@@ -1,7 +1,7 @@
 package info.kuechler.frickels.colorspace;
 
-import static info.kuechler.frickels.colorspace.RGBColorSpaceImpl.AdobeRGB1998;
-import static info.kuechler.frickels.colorspace.RGBColorSpaceImpl.sRGB;
+import static info.kuechler.frickels.colorspace.RGBColorSpace.AdobeRGB1998;
+import static info.kuechler.frickels.colorspace.RGBColorSpace.sRGB;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleArrayEquals;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
 

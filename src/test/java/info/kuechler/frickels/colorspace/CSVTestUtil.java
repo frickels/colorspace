@@ -1,6 +1,6 @@
 package info.kuechler.frickels.colorspace;
 
-import static info.kuechler.frickels.colorspace.RGBColorSpaceImpl.sRGB;
+import static info.kuechler.frickels.colorspace.RGBColorSpace.sRGB;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;

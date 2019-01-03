@@ -3,6 +3,8 @@ package info.kuechler.frickels.colorspace;
 import static info.kuechler.frickels.colorspace.ChromaticAdaptation.BRADFORD;
 import static info.kuechler.frickels.colorspace.ChromaticAdaptation.VON_KRIES;
 import static info.kuechler.frickels.colorspace.ChromaticAdaptation.XYZ_SCALING;
+import static info.kuechler.frickels.colorspace.Illuminant.D50_2;
+import static info.kuechler.frickels.colorspace.RGBColorSpace.sRGB;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleArrayEquals;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
 
@@ -45,13 +47,13 @@ public class ChromaticAdaptationTest {
 
     @Test
     public final void testSRgb2Xyz() {
-        final XYZ source = new RGB(RGBColorSpaceImpl.sRGB, 0.5, 0.5, 0.5).toXYZ();
+        final XYZ source = new RGB(sRGB, 0.5, 0.5, 0.5).toXYZ();
         System.out.println("ChromaticAdaptationTest source " + source);
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
         assertDoubleDiff(0.00001, 0.2034400, source.getX());
 
-        final XYZ target = BRADFORD.adapt(source, Illuminant.D50_2);
+        final XYZ target = BRADFORD.adapt(source, D50_2);
         System.out.println("ChromaticAdaptationTest target " + target);
         assertDoubleDiff(0.00001, 0.206385, target.getX());
         assertDoubleDiff(0.00001, 0.214040, target.getY());

@@ -1,6 +1,6 @@
 package info.kuechler.frickels.colorspace;
 
-import static info.kuechler.frickels.colorspace.RGBColorSpaceImpl.sRGB;
+import static info.kuechler.frickels.colorspace.RGBColorSpace.sRGB;
 
 import org.junit.jupiter.api.Test;
 

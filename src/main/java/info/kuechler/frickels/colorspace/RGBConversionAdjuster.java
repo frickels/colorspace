@@ -28,7 +28,8 @@ public class RGBConversionAdjuster implements Serializable, Cloneable {
             f = -f;
             correct = -1.;
         }
-        if (f <= 0.0031308) {
+        // https://de.wikipedia.org/wiki/RGB-Farbraum
+        if (f <= 0.0031306684425) {
             return correct * (f * CONVERT_SRGB_SLOPE);
         }
         return correct * ((1. + CONVERT_SRGB_OFFSET) * Math.pow(f, 1. / CONVERT_SRGB_GAMMA) - CONVERT_SRGB_OFFSET);
@@ -40,7 +41,7 @@ public class RGBConversionAdjuster implements Serializable, Cloneable {
             f = -f;
             correct = -1.;
         }
-        if (f <= 0.04045) {
+        if (f <= 0.040448236277) {
             return correct * (f / CONVERT_SRGB_SLOPE);
         }
         final double a = (f + CONVERT_SRGB_OFFSET) / (1. + CONVERT_SRGB_OFFSET);
