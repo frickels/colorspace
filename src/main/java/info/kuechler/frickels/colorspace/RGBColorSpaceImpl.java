@@ -16,22 +16,20 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
     private final XYY xb;
     private final Illuminant illuminant;
     private final double gamma;
-    private final RGBConversionAdjuster valueAdjuster;
-    private final RGBConversionAdjuster valueReverseAdjuster;
+    private final RGBGammaStrategy gammaStrategy;
     private transient double[][] transformationMatrix;
     private transient double[][] reverseTransformationMatrix;
     /** replaces (reverse) transformation matrix in {@link #equals(Object)} and {@link #hashCode()} method. */
     private transient double determinatTransformationMatrix;
 
     public RGBColorSpaceImpl(final XYY xr, final XYY xg, final XYY xb, final Illuminant illuminant, final double gamma,
-            RGBConversionAdjuster valueAdjuster, RGBConversionAdjuster valueReverseAdjuster) {
+            RGBGammaStrategy gammaStrategy) {
         this.xr = xr;
         this.xg = xg;
         this.xb = xb;
         this.illuminant = illuminant;
         this.gamma = gamma;
-        this.valueAdjuster = valueAdjuster;
-        this.valueReverseAdjuster = valueReverseAdjuster;
+        this.gammaStrategy = gammaStrategy;
         init();
     }
 
@@ -44,19 +42,14 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
     @Override
     public RGB fromXYZ(final XYZ xyz) {
         final XYZ xyzIlluminated = xyz.changeIlluminant(getIlluminant());
-        final double[] data = xyzIlluminated.toDouble();
-        final double[] convert = multMatrix33Vec3(getReverseTransformationMatrix(), data);
-        final RGBConversionAdjuster adjuster = getValueAdjuster();
-        return new RGB(this, adjuster.adjust(this, convert[0]), adjuster.adjust(this, convert[1]),
-                adjuster.adjust(this, convert[2]));
+        final double[] convert = multMatrix33Vec3(getReverseTransformationMatrix(), xyzIlluminated.toDouble());
+        final double[] d = getGammaStrategy().adjust(this, convert);
+        return new RGB(this, d[0], d[1], d[2]);
     }
 
     @Override
     public XYZ toXYZ(final RGB rgb) {
-        final double[] data = rgb.toDouble();
-        final RGBConversionAdjuster adjuster = getValueReverseAdjuster();
-        final double[] dataAdj = new double[] { adjuster.adjust(this, data[0]), adjuster.adjust(this, data[1]),
-                adjuster.adjust(this, data[2]) };
+        final double[] dataAdj = getGammaStrategy().reverseAdjust(this, rgb.toDouble());
         final double[] convert = multMatrix33Vec3(getTransformationMatrix(), dataAdj);
         return new XYZ(getIlluminant(), convert[0], convert[1], convert[2]);
     }
@@ -69,7 +62,6 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
                 Yto1(xb).toXYZ().toDouble()//
         });
         final double[] s = multMatrix33Vec3(invertMatrix33(m), refWhite.getXyy().toXYZ().toDouble());
-
         return new double[][] { //
                 { s[0] * m[0][0], s[1] * m[0][1], s[2] * m[0][2] }, //
                 { s[0] * m[1][0], s[1] * m[1][1], s[2] * m[1][2] }, //
@@ -104,12 +96,8 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
         return gamma;
     }
 
-    public RGBConversionAdjuster getValueAdjuster() {
-        return valueAdjuster;
-    }
-
-    public RGBConversionAdjuster getValueReverseAdjuster() {
-        return valueReverseAdjuster;
+    public RGBGammaStrategy getGammaStrategy() {
+        return gammaStrategy;
     }
 
     public double[][] getTransformationMatrix() {
@@ -122,7 +110,7 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(determinatTransformationMatrix, gamma, valueAdjuster, valueReverseAdjuster);
+        return Objects.hash(determinatTransformationMatrix, gamma, gammaStrategy);
     }
 
     @Override
@@ -140,8 +128,7 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
         return Double.doubleToLongBits(determinatTransformationMatrix) == Double
                 .doubleToLongBits(other.determinatTransformationMatrix)
                 && Double.doubleToLongBits(gamma) == Double.doubleToLongBits(other.gamma)
-                && Objects.equals(valueAdjuster, other.valueAdjuster)
-                && Objects.equals(valueReverseAdjuster, other.valueReverseAdjuster);
+                && Objects.equals(gammaStrategy, other.gammaStrategy);
     }
 
     private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
@@ -151,6 +138,6 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
 
     @Override
     public RGBColorSpaceImpl clone() {
-        return new RGBColorSpaceImpl(xr, xg, xb, illuminant, gamma, valueAdjuster, valueReverseAdjuster);
+        return new RGBColorSpaceImpl(xr, xg, xb, illuminant, gamma, gammaStrategy);
     }
 }

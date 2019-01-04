@@ -10,16 +10,16 @@ public class YCbCr implements Color {
 
     private final double[] fdata;
     private final YPbPrStandard standard;
-    private final YCbCrAdjuster adjuster;
+    private final YCbCrConvertStrategy convertStrategy;
 
-    public YCbCr(final YPbPrStandard standard, final YCbCrAdjuster adjuster, final double Y, final double Cb,
-            final double Cr) {
+    public YCbCr(final YPbPrStandard standard, final YCbCrConvertStrategy convertStrategy, final double Y,
+            final double Cb, final double Cr) {
         this.fdata = new double[] { Y, Cb, Cr };
         this.standard = standard;
-        this.adjuster = adjuster;
+        this.convertStrategy = convertStrategy;
     }
 
-    public static YCbCr fromYPbPr(final YCbCrAdjuster adjuster, final YPbPr ypbpr) {
+    public static YCbCr fromYPbPr(final YCbCrConvertStrategy adjuster, final YPbPr ypbpr) {
         final double[] d = adjuster.adjust(ypbpr.toDouble());
         return new YCbCr(ypbpr.getStandard(), adjuster, d[0], d[1], d[2]);
     }
@@ -31,12 +31,12 @@ public class YCbCr implements Color {
      * @param rgb
      * @return
      */
-    public static YCbCr fromRGB(final YPbPrStandard standard, final YCbCrAdjuster adjuster, final RGB rgb) {
+    public static YCbCr fromRGB(final YPbPrStandard standard, final YCbCrConvertStrategy adjuster, final RGB rgb) {
         return fromYPbPr(adjuster, YPbPr.fromRGB(standard, rgb));
     }
 
     public YPbPr toYPbPr() {
-        final double[] d = getAdjuster().reverseAdjust(toDoubleInternal());
+        final double[] d = getConvertStrategy().reverseAdjust(toDoubleInternal());
         return new YPbPr(getStandard(), d[0], d[1], d[2]);
     }
 
@@ -79,8 +79,8 @@ public class YCbCr implements Color {
         return standard;
     }
 
-    public YCbCrAdjuster getAdjuster() {
-        return adjuster;
+    public YCbCrConvertStrategy getConvertStrategy() {
+        return convertStrategy;
     }
 
     private double[] toDoubleInternal() {
@@ -102,7 +102,7 @@ public class YCbCr implements Color {
         final int prime = 31;
         int result = 1;
         result = prime * result + Objects.hash(standard);
-        result = prime * result + Objects.hash(adjuster);
+        result = prime * result + Objects.hash(convertStrategy);
         result = prime * result + Arrays.hashCode(fdata);
         return result;
     }
@@ -120,11 +120,11 @@ public class YCbCr implements Color {
         }
         final YCbCr other = (YCbCr) obj;
         return Arrays.equals(fdata, other.fdata) && Objects.equals(standard, other.standard)
-                && Objects.equals(adjuster, other.adjuster);
+                && Objects.equals(convertStrategy, other.convertStrategy);
     }
 
     @Override
     public YCbCr clone() {
-        return new YCbCr(getStandard(), getAdjuster(), getY(), getCb(), getCr());
+        return new YCbCr(getStandard(), getConvertStrategy(), getY(), getCb(), getCr());
     }
 }

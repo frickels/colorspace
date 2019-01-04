@@ -5,12 +5,21 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class YCbCrAdjuster implements Serializable, Cloneable {
+public class YCbCrConvertStrategy implements Serializable, Cloneable {
+
+    private static final long serialVersionUID = -9184127472581659998L;
+
+    private static final ConcurrentMap<String, YCbCrAdjusterOperator> OPERATORS = new ConcurrentHashMap<>();
+
+    @FunctionalInterface
+    public interface YCbCrAdjusterOperator {
+        double[] adjust(final double[] doubles);
+    }
 
     /**
      * 255 steps with 0 to 15 footroom and from 236 to 255 headroom.
      */
-    public static final YCbCrAdjuster ITU_R = new YCbCrAdjuster("ITU_R", d -> new double[] { //
+    public static final YCbCrConvertStrategy ITU_R = new YCbCrConvertStrategy("ITU_R", d -> new double[] { //
             219. * d[0] + 16., //
             224. * d[1] + 128., //
             224. * d[2] + 128. //
@@ -23,7 +32,7 @@ public class YCbCrAdjuster implements Serializable, Cloneable {
     /**
      * 255 steps, full usage
      */
-    public static final YCbCrAdjuster NONE = new YCbCrAdjuster("NONE", d -> new double[] { //
+    public static final YCbCrConvertStrategy NONE = new YCbCrConvertStrategy("NONE", d -> new double[] { //
             255. * d[0], //
             255. * d[1] + 128., //
             255. * d[2] + 128. //
@@ -33,20 +42,11 @@ public class YCbCrAdjuster implements Serializable, Cloneable {
             (d[2] - 128.) / 255. //
     });
 
-    private static final long serialVersionUID = -9184127472581659998L;
-
-    private static final ConcurrentMap<String, YCbCrAdjusterOperator> OPERATORS = new ConcurrentHashMap<>();
-
-    @FunctionalInterface
-    public interface YCbCrAdjusterOperator {
-        double[] adjust(final double[] doubles);
-    }
-
     private final String id;
     private transient final YCbCrAdjusterOperator operator;
     private transient final YCbCrAdjusterOperator reverseOperator;
 
-    public YCbCrAdjuster(final String id, final YCbCrAdjusterOperator operator,
+    public YCbCrConvertStrategy(final String id, final YCbCrAdjusterOperator operator,
             final YCbCrAdjusterOperator reverseOperator) {
         OPERATORS.put(id, operator);
         OPERATORS.put(createReverseId(id), reverseOperator);
@@ -64,7 +64,7 @@ public class YCbCrAdjuster implements Serializable, Cloneable {
     }
 
     public double[] reverseAdjust(final double[] doubles) {
-        return reverseAdjust(doubles);
+        return reverseOperator.adjust(doubles);
     }
 
     public String getId() {
@@ -87,7 +87,7 @@ public class YCbCrAdjuster implements Serializable, Cloneable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final YCbCrAdjuster other = (YCbCrAdjuster) obj;
+        final YCbCrConvertStrategy other = (YCbCrConvertStrategy) obj;
         return Objects.equals(id, other.id);
     }
 
@@ -98,11 +98,11 @@ public class YCbCrAdjuster implements Serializable, Cloneable {
         if (!OPERATORS.containsKey(createReverseId(id))) {
             throw new RuntimeException("Cannot read, reverse operator is not registered: " + id);
         }
-        return new YCbCrAdjuster(id, OPERATORS.get(id), OPERATORS.get(createReverseId(id)));
+        return new YCbCrConvertStrategy(id, OPERATORS.get(id), OPERATORS.get(createReverseId(id)));
     }
 
     @Override
-    public YCbCrAdjuster clone() {
-        return new YCbCrAdjuster(id, operator, reverseOperator);
+    public YCbCrConvertStrategy clone() {
+        return new YCbCrConvertStrategy(id, operator, reverseOperator);
     }
 }

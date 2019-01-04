@@ -2,7 +2,7 @@ package info.kuechler.frickels.colorspace;
 
 import static info.kuechler.frickels.colorspace.RGBColorSpace.sRGB;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
-import static info.kuechler.frickels.colorspace.YCbCrAdjuster.ITU_R;
+import static info.kuechler.frickels.colorspace.YCbCrConvertStrategy.ITU_R;
 import static info.kuechler.frickels.colorspace.YPbPrStandard.ITU_R_BT_601;
 
 import org.junit.jupiter.api.Test;
