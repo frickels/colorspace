@@ -10,35 +10,34 @@ public class YCbCr implements Color {
 
     private final double[] fdata;
     private final YPbPrStandard standard;
+    private final YCbCrAdjuster adjuster;
 
-    public YCbCr(final YPbPrStandard standard, final double Y, final double Cb, final double Cr) {
-        fdata = new double[] { Y, Cb, Cr };
+    public YCbCr(final YPbPrStandard standard, final YCbCrAdjuster adjuster, final double Y, final double Cb,
+            final double Cr) {
+        this.fdata = new double[] { Y, Cb, Cr };
         this.standard = standard;
+        this.adjuster = adjuster;
     }
 
-    public static YCbCr fromYPbPr(final YPbPr ypbpr) {
-        final double Y = 219. * ypbpr.getY() + 16.;
-        final double Cb = 224. * ypbpr.getPb() + 128.;
-        final double Cr = 224. * ypbpr.getPr() + 128.;
-        return new YCbCr(ypbpr.getStandard(), Y, Cb, Cr);
+    public static YCbCr fromYPbPr(final YCbCrAdjuster adjuster, final YPbPr ypbpr) {
+        final double[] d = adjuster.adjust(ypbpr.toDouble());
+        return new YCbCr(ypbpr.getStandard(), adjuster, d[0], d[1], d[2]);
     }
 
     /**
-     * Shortcut, same as <code>YCbCr.fromYPbPr(YPbPr.fromRGB(standard, rgb))</code>.
+     * Shortcut, same as <code>fromYPbPr(adjuster, YPbPr.fromRGB(standard, rgb))</code>.
      * 
      * @param standard
      * @param rgb
      * @return
      */
-    public static YCbCr fromRGB(final YPbPrStandard standard, final RGB rgb) {
-        return YCbCr.fromYPbPr(YPbPr.fromRGB(standard, rgb));
+    public static YCbCr fromRGB(final YPbPrStandard standard, final YCbCrAdjuster adjuster, final RGB rgb) {
+        return fromYPbPr(adjuster, YPbPr.fromRGB(standard, rgb));
     }
 
     public YPbPr toYPbPr() {
-        final double Y = (getY() - 16.) / 219.;
-        final double Pb = (getCb() - 128.) / 224.;
-        final double Pr = (getCr() - 128.) / 224.;
-        return new YPbPr(getStandard(), Y, Pb, Pr);
+        final double[] d = getAdjuster().reverseAdjust(toDoubleInternal());
+        return new YPbPr(getStandard(), d[0], d[1], d[2]);
     }
 
     /**
@@ -64,17 +63,28 @@ public class YCbCr implements Color {
         return toDoubleInternal()[2];
     }
 
+    public int getDigialY() {
+        return (int) round(getY());
+    }
+
+    public int getDigialCb() {
+        return (int) round(getCb());
+    }
+
+    public int getDigialCr() {
+        return (int) round(getCr());
+    }
+
     public YPbPrStandard getStandard() {
         return standard;
     }
 
-    private double[] toDoubleInternal() {
-        return fdata;
+    public YCbCrAdjuster getAdjuster() {
+        return adjuster;
     }
 
-    public double[] toDoubleRounded() {
-        final double[] d = toDoubleInternal();
-        return new double[] { round(d[0]), round(d[1]), round(d[2]) };
+    private double[] toDoubleInternal() {
+        return fdata;
     }
 
     @Override
@@ -92,6 +102,7 @@ public class YCbCr implements Color {
         final int prime = 31;
         int result = 1;
         result = prime * result + Objects.hash(standard);
+        result = prime * result + Objects.hash(adjuster);
         result = prime * result + Arrays.hashCode(fdata);
         return result;
     }
@@ -108,11 +119,12 @@ public class YCbCr implements Color {
             return false;
         }
         final YCbCr other = (YCbCr) obj;
-        return Arrays.equals(fdata, other.fdata) && Objects.equals(standard, other.standard);
+        return Arrays.equals(fdata, other.fdata) && Objects.equals(standard, other.standard)
+                && Objects.equals(adjuster, other.adjuster);
     }
 
     @Override
     public YCbCr clone() {
-        return new YCbCr(getStandard(), getY(), getCb(), getCr());
+        return new YCbCr(getStandard(), getAdjuster(), getY(), getCb(), getCr());
     }
 }
