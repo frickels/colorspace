@@ -11,9 +11,9 @@ import java.util.Objects;
 public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
     private static final long serialVersionUID = 4632087745617854955L;
 
-    private final XYY xr;
-    private final XYY xg;
-    private final XYY xb;
+    private final XYZ xr;
+    private final XYZ xg;
+    private final XYZ xb;
     private final Illuminant illuminant;
     private final double gamma;
     private final RGBGammaStrategy gammaStrategy;
@@ -22,8 +22,18 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
     /** replaces (reverse) transformation matrix in {@link #equals(Object)} and {@link #hashCode()} method. */
     private transient double determinatTransformationMatrix;
 
-    public RGBColorSpaceImpl(final XYY xr, final XYY xg, final XYY xb, final Illuminant illuminant, final double gamma,
-            RGBGammaStrategy gammaStrategy) {
+    public static final RGBColorSpaceImpl fromXYZ(final XYZ xr, final XYZ xg, final XYZ xb, final Illuminant illuminant,
+            final double gamma, RGBGammaStrategy gammaStrategy) {
+        return new RGBColorSpaceImpl(xr, xg, xb, illuminant, gamma, gammaStrategy);
+    }
+
+    public static final RGBColorSpaceImpl fromXYY(final XYY xr, final XYY xg, final XYY xb, final Illuminant illuminant,
+            final double gamma, RGBGammaStrategy gammaStrategy) {
+        return new RGBColorSpaceImpl(xr.toXYZ(), xg.toXYZ(), xb.toXYZ(), illuminant, gamma, gammaStrategy);
+    }
+
+    protected RGBColorSpaceImpl(final XYZ xr, final XYZ xg, final XYZ xb, final Illuminant illuminant,
+            final double gamma, RGBGammaStrategy gammaStrategy) {
         this.xr = xr;
         this.xg = xg;
         this.xb = xb;
@@ -54,12 +64,12 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
         return new XYZ(getIlluminant(), convert[0], convert[1], convert[2]);
     }
 
-    private double[][] calculateTransformationMatrix(final XYY xr, final XYY xg, final XYY xb,
+    private double[][] calculateTransformationMatrix(final XYZ xr, final XYZ xg, final XYZ xb,
             final Illuminant refWhite) {
         final double[][] m = transposeMatrix33(new double[][] { //
-                Yto1(xr).toXYZ().toDouble(), //
-                Yto1(xg).toXYZ().toDouble(), //
-                Yto1(xb).toXYZ().toDouble()//
+                xr.toDouble(), //
+                xg.toDouble(), //
+                xb.toDouble()//
         });
         final double[] s = multMatrix33Vec3(invertMatrix33(m), refWhite.getXyy().toXYZ().toDouble());
         return new double[][] { //
@@ -69,20 +79,15 @@ public class RGBColorSpaceImpl implements RGBColorSpace, Cloneable {
         };
     }
 
-    private XYY Yto1(XYY xyy) {
-        final double[] m = xyy.toDouble();
-        return new XYY(xyy.getIlluminant(), m[0], m[1], 1.);
-    }
-
-    public XYY getXr() {
+    public XYZ getXr() {
         return xr;
     }
 
-    public XYY getXg() {
+    public XYZ getXg() {
         return xg;
     }
 
-    public XYY getXb() {
+    public XYZ getXb() {
         return xb;
     }
 

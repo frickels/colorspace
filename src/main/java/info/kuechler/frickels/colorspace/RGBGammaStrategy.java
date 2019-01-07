@@ -2,7 +2,7 @@ package info.kuechler.frickels.colorspace;
 
 import static info.kuechler.frickels.colorspace.CIEColor.κ;
 import static info.kuechler.frickels.colorspace.CIEColor.ϵ;
-import static info.kuechler.frickels.colorspace.RGBGammaStrategy.RGBValueAdjusterOperator.operateToSingle;
+import static info.kuechler.frickels.colorspace.RGBGammaStrategy.RGBValueAdjusterOperator.splitToSingle;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -24,7 +24,7 @@ public class RGBGammaStrategy implements Serializable, Cloneable {
     public interface RGBValueAdjusterOperator {
         double[] adjust(RGBColorSpace colorSpaces, double[] operand);
 
-        static RGBValueAdjusterOperator operateToSingle(RGBValueSingleAdjusterOperator op) {
+        static RGBValueAdjusterOperator splitToSingle(final RGBValueSingleAdjusterOperator op) {
             return (cs, fa) -> {
                 return new double[] { //
                         op.adjust(cs, fa[0]), //
@@ -42,7 +42,7 @@ public class RGBGammaStrategy implements Serializable, Cloneable {
     private static final double CONVERT_SRGB_SLOPE = 12.92321;
 
     public static final RGBGammaStrategy XYZ_SRGB = new RGBGammaStrategy("XYZ_SRGB", //
-            operateToSingle((cs, f) -> {
+            splitToSingle((cs, f) -> {
                 double correct = 1.;
                 if (f < 0.) {
                     f = -f;
@@ -54,7 +54,7 @@ public class RGBGammaStrategy implements Serializable, Cloneable {
                 }
                 return correct
                         * ((1. + CONVERT_SRGB_OFFSET) * Math.pow(f, 1. / CONVERT_SRGB_GAMMA) - CONVERT_SRGB_OFFSET);
-            }), operateToSingle((cs, f) -> {
+            }), splitToSingle((cs, f) -> {
                 double correct = 1.;
                 if (f < 0.) {
                     f = -f;
@@ -69,18 +69,39 @@ public class RGBGammaStrategy implements Serializable, Cloneable {
     );
 
     public static final RGBGammaStrategy XYZ_RGB_STD = new RGBGammaStrategy("XYZ_RGB_STD", //
-            operateToSingle((cs, f) -> {
+            splitToSingle((cs, f) -> {
                 final double gammaFac = 1. / cs.getGamma();
                 return (f >= 0.) ? Math.pow(f, gammaFac) : -Math.pow(-f, gammaFac);
-            }), operateToSingle((cs, f) -> {
+            }), splitToSingle((cs, f) -> {
+                final double gammaFac = cs.getGamma();
+                return (f >= 0.) ? Math.pow(f, gammaFac) : -Math.pow(-f, gammaFac);
+            })//
+    );
+
+    public static final RGBGammaStrategy NONE = new RGBGammaStrategy("NONE", //
+            (cs, fa) -> fa, //
+            (cs, fa) -> fa//
+    );
+
+    public static final RGBGammaStrategy PHOTO_PRO = new RGBGammaStrategy("NONE", //
+            splitToSingle((cs, f) -> {
+                if (f <= 1. / 512.) {
+                    return 16. * f;
+                }
+                final double gammaFac = 1. / cs.getGamma();
+                return (f >= 0.) ? Math.pow(f, gammaFac) : -Math.pow(-f, gammaFac);
+            }), splitToSingle((cs, f) -> {
+                if (f <= 1. / 32.) {
+                    return f / 16.;
+                }
                 final double gammaFac = cs.getGamma();
                 return (f >= 0.) ? Math.pow(f, gammaFac) : -Math.pow(-f, gammaFac);
             })//
     );
 
     public static final RGBGammaStrategy XYZ_RGB_L = new RGBGammaStrategy("XYZ_RGB_L", //
-            operateToSingle((cs, f) -> {
-                // http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_RGB.html
+            splitToSingle((cs, f) -> {
+                // http://www.brucelindbloom.com/
                 double correct = 1.;
                 if (f < 0.) {
                     f = -f;
@@ -90,8 +111,8 @@ public class RGBGammaStrategy implements Serializable, Cloneable {
                     return correct * f * κ / 100.;
                 }
                 return correct * 1.16 * Math.cbrt(f) - 0.16;
-            }), operateToSingle((cs, f) -> {
-                // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+            }), splitToSingle((cs, f) -> {
+                // http://www.brucelindbloom.com/
                 double correct = 1.;
                 if (f < 0.) {
                     f = -f;

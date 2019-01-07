@@ -1,6 +1,6 @@
 package info.kuechler.frickels.colorspace;
 
-import static info.kuechler.frickels.colorspace.RGBColorSpace.AdobeRGB1998;
+import static info.kuechler.frickels.colorspace.RGBColorSpace.Adobe_RGB_1998;
 import static info.kuechler.frickels.colorspace.RGBColorSpace.sRGB;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleArrayEquals;
 import static info.kuechler.frickels.colorspace.TestUtil.assertDoubleDiff;
@@ -44,7 +44,7 @@ public class RGBColorSpaceTest {
 
     @Test
     public final void testAdobeRGB() {
-        final RGBColorSpaceImpl cs = (RGBColorSpaceImpl) AdobeRGB1998;
+        final RGBColorSpaceImpl cs = (RGBColorSpaceImpl) Adobe_RGB_1998;
         assertDoubleArrayEquals(0.001, ADOBE_RGB_TO, cs.getTransformationMatrix());
         assertDoubleArrayEquals(0.001, ADOBE_RGB_FROM, cs.getReverseTransformationMatrix());
     }
@@ -56,7 +56,7 @@ public class RGBColorSpaceTest {
         assertDoubleDiff(0.00001, 0.203440, xyz.getX());
         assertDoubleDiff(0.00001, 0.214041, xyz.getY());
         assertDoubleDiff(0.00001, 0.233054, xyz.getZ());
-        final RGB rgb = RGB.fromXYZ(AdobeRGB1998, xyz);
+        final RGB rgb = RGB.fromXYZ(Adobe_RGB_1998, xyz);
         System.out.println("RGB2AdobeRGB " + rgb);
         assertDoubleDiff(0.0005, 0.496228, rgb.getR());
         assertDoubleDiff(0.0005, 0.496227, rgb.getG());

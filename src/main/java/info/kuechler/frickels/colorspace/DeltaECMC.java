@@ -57,7 +57,7 @@ public class DeltaECMC {
         // (12)
         // degree to radian
         final double T;
-        if (164. <= H && H1 <= 345.) {
+        if (164. <= H1 && H1 <= 345.) {
             T = 0.56 + Math.abs(0.2 * Math.cos(Math.toRadians(H1 + 168.)));
         } else {
             T = 0.36 + Math.abs(0.4 * Math.cos(Math.toRadians(H1 + 35.)));
