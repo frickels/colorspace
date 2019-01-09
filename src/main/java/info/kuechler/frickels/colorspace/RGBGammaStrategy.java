@@ -83,7 +83,7 @@ public class RGBGammaStrategy implements Serializable, Cloneable {
             (cs, fa) -> fa//
     );
 
-    public static final RGBGammaStrategy PHOTO_PRO = new RGBGammaStrategy("NONE", //
+    public static final RGBGammaStrategy PHOTO_PRO = new RGBGammaStrategy("PHOTO_PRO", //
             splitToSingle((cs, f) -> {
                 if (f <= 1. / 512.) {
                     return 16. * f;
