@@ -1,4 +1,4 @@
-# colorspace
+# colorspace [![Build Status](https://travis-ci.com/frickels/colorspace.svg?branch=master)](https://travis-ci.com/frickels/colorspace)
 
 Colorspace is a library to converts colors between colorspaces.
 
